@@ -208,6 +208,8 @@ void MoveAbsolutePosition(int position, int velocityLimit) {
       // follows along with the motor position then I could use this to control the LED. Alternatively I'd need to setup an encorder. 
 
       // motor.PositionRefCommanded()
+      // Add mapping command here. 
+      // Add serial coms here. 
 
     }
 
