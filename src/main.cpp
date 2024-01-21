@@ -2,6 +2,7 @@
  * Penumbra_Principal
  *
  *  This is the primary code base that will run on the clear core.
+ * 
  */
 #include <Arduino.h>
 #include <ClearCore.h>
@@ -253,14 +254,3 @@ void WheelControl() {
     motor.VelMax(2000); // Reset the motor velocity to something reasonable (in case wheel was at 0)
     Serial.println("Exiting Wheel Control Mode ");
 }
-
-
-
-
-
-
-
-
-
-
-
