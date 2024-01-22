@@ -1,86 +1,88 @@
 #include "main.h"
-#include <Arduino.h>
+
+/* WheelControl() is the function that is called when a user starts to move the wheel. 
+It allows the user to control the light for a defined interval of time. 
+*/
+
+/* Set the Maximum speeds for mapping the encoder speed to the motor speed. 
+  For the Encoder: 
+    1 revolution in 5 seconds on the wheel = 200 counts/second
+    250 RPM = 4.2 rev/s (Seems hard to imagine going that fast) = 42,000 counts/second  
+  For the motor: (Pulses/s output)
+    0 - 5000 seems reasonable to start, may want to adjust
+*/
+#define encoderMaxSpeed 42000 
+#define motorMaxSpeed 5000  // 5000 is for the chain system, 3000 better for the wire system. 
+
+// Set the update intervals for the timer loops. 
+#define wheelTimeout 10000 // 10 seconds
+#define motorUpdateInterval 200 // 200 ms
+#define encoderAverageInterval 100 // 100 ms
+#define motorVelocityReset 2000 // Resets the motor velocity at the end of user interaction. 
 
 void WheelControl() {
     // The motor will follow user input on a wheel as measured by an encoder. 
     Serial.println("Entering the Wheel Control Loop ");
 
     // Declare variables needed for this function only. 
-    int32_t Wheel_position = 0;
-    int32_t last_Wheel_position = 0;
-    int32_t Wheel_velocity = 0;
-    int totalVelocity;
-    int readingsCount;
-    //int32_t indexPosition = 0;
-    //int32_t lastIndexPosition = 0;
-    //bool quadratureError = false;
+    int32_t wheelPosition = 0;
+    int32_t lastWheelPosition = 0;
+    int32_t wheelVelocity = 0;
+    int totalVelocity = 0;
+    int readingsCount = 0;
+    int userSpeed = 0; 
 
-    // Variables for Calculating encoder. 
-
-    // Create a timer to keep us in the while loop for X seconds
-    uint32_t Wheel_timeout = 10000; //10 seconds
-    uint32_t Wheel_startTime = millis();
-    while (millis() - Wheel_startTime < Wheel_timeout) {
+    // This timer keeps us in a while loop for wheelTimeout seconds. This is how long the user can play with the wheel before reverting back to the original code.   
+    uint32_t wheelStartTime, encoderStartTime, motorStartTime;
+    wheelStartTime = encoderStartTime = motorStartTime = millis();
+    
+    while (millis() - wheelStartTime < wheelTimeout) {
       
-      Wheel_position = EncoderIn.Position(); // Read the encoder position
-      Wheel_velocity = EncoderIn.Velocity(); // Read the encoder velocity
-      //Serial.print("Wheel Position: ");
-      //Serial.println(Wheel_position);
-      //Serial.print("Wheel Velocity: ");
+      wheelPosition = EncoderIn.Position(); // Read the encoder position
+      wheelVelocity = EncoderIn.Velocity(); // Read the encoder velocity
 
-      totalVelocity += Wheel_velocity;
-      readingsCount++;
+      totalVelocity += wheelVelocity; // Add the wheel velocity to the totalVelocity variable. 
+      readingsCount++; // Increment the number of readings we have taken
 
-      int Wheel_currentTime = millis();
-      int Wheel_startTime = Wheel_currentTime;
-      int motorStartTime = Wheel_currentTime;
-      int motorTime = Wheel_currentTime;
-      int averageVelocity = 0;
-
-      // Check if 0.1 seconds have passed
-      if (Wheel_currentTime - Wheel_startTime >= 100) {
+      // This timer calculates the average velocity over a window of 0.1 seconds
+      if (millis() - encoderStartTime >= encoderAverageInterval) {
         // Calculate average velocity over 0.1 seconds
-        int averageVelocity = totalVelocity / readingsCount;
+        float averageVelocity = totalVelocity / readingsCount;
 
         // Print the average velocity
-        Serial.print("Average Wheel Velocity: ");
-        Serial.println(averageVelocity);
+        // Serial.print("Average Wheel Velocity: ");
+        // Serial.println(averageVelocity);
+        
+        //Convert the averageVelocity (counts/second) to an appropriate motor speed (Pulses/sec).
+        userSpeed = map(abs(averageVelocity),0,encoderMaxSpeed,0,motorMaxSpeed);
 
         // Reset variables for the next interval
-        totalVelocity = 0.0;
+        totalVelocity = 0;
         readingsCount = 0;
-        Wheel_startTime = Wheel_currentTime;
+        encoderStartTime = millis();
       }
 
-      // Map the wheel velocity (counts/second) to an appropriate motor speed (Pulses/sec).
-      // Encoder: 
-        // 1 revolution in 5 seconds on the wheel = 200 counts/second
-        // 250 RPM = 4.2 rev/s (Seems hard to imagine going that fast) = 42,000 counts/second  
-      // Motor: (Pulse output)
-        // 0 - 3000 seems reasonable to start, may want to adjust
-      int User_Speed = map(abs(averageVelocity),0,42000,0,3000);
-
-
-      // This Loop Occurs Every 200 ms. Updating faster seems to cause the motor to freak out. 
-      if (motorTime - motorStartTime >= 200) {
-        if(Wheel_position > last_Wheel_position){ // Go UP
-          motor.VelMax(User_Speed); // Sets the maximum velocity for this move based on the potentiometer
+      // This timer makes it so the motor gets updated position commands every motorUpdateInterval seconds
+      // Going faster seems to cause unwanted behavior.  
+      if (millis() - motorStartTime >= motorUpdateInterval) {
+        if(wheelPosition > lastWheelPosition){ // Go UP
+          motor.VelMax(userSpeed); // Sets the maximum velocity for this move based on the potentiometer
           motor.Move(Pos_Top, MotorDriver::MOVE_TARGET_ABSOLUTE); // Commands the motor move (with no waiting step before commanding additional moves!)
           //Serial.print("Moving up at user speed: ");
-          //Serial.println(User_Speed);
+          //Serial.println(userSpeed);
         }
         else{ // Go Down
-          motor.VelMax(User_Speed); // Sets the maximum velocity for this move based on the potentiometer
+          motor.VelMax(userSpeed); // Sets the maximum velocity for this move based on the userSpeed
           motor.Move(Pos_Bottom, MotorDriver::MOVE_TARGET_ABSOLUTE); // Commands the motor move (with no waiting step before commanding additional moves!)
         }
-        last_Wheel_position = Wheel_position;
-        motorStartTime = motorTime;       
+        lastWheelPosition = wheelPosition;
+        motorStartTime = millis();       
 
-    }
+      }
     
-    motor.MoveStopDecel(4000); // Stop the motor
-    motor.VelMax(2000); // Reset the motor velocity to something reasonable (in case wheel was at 0)
+    motor.MoveStopDecel(motorDecel); // Stop the motor at the deceleration limit (set in main.cpp)
+    motor.VelMax(motorVelocityReset); // Reset the motor velocity to something reasonable (in case wheel was at 0)
     Serial.println("Exiting Wheel Control Mode ");
-}
+    }
 
 }

@@ -12,7 +12,7 @@
 #define BotInterruptPin DI6
 #define TopInterruptPin DI7
 
-// Select the baud rate to match the target serial device
+// Select the USB baud rate for the serial device
 #define baudRate 9600
 
 // Variables to initialize the encoder
@@ -21,9 +21,12 @@ bool indexInverted = false;
 // Set to true if the sense of encoder direction should be inverted.
 bool swapDirection = false; 
 
-// Define the initial velocity and acceleration limits to be used for default moves
+
+// Define the initial velocity limit, acceleration limit, and commanded deceleration to be used for default moves
 int velocityLimit = 2300; // pulses per sec
-int accelerationLimit = 4600; // pulses per sec^2
+int accelerationLimit = 9000; // pulses per sec^2
+int motorDecel = 4000; //Defines how quickly the motor should decelerate when switching to user mode. 
+int homingVelocity = -2000; //Velocity to home the motor. 
 
 // Define the physical relationship between steps and light position
 // See "Penumbra Motor Calculations" google sheet for value calculator
@@ -33,85 +36,90 @@ int Pos_Middle = Pos_Top/2;
 int Home_Offset = 291;
 
 void setup() {
-    // This setup function only runs once
+    // Communications Setup
+        // Serial Coms to the USB Port (with timeout)
+        Serial.begin(baudRate);
+        uint32_t timeout = 5000; // 5 second timeout
+        uint32_t startTime = millis();
+        while (!Serial && millis() - startTime < timeout) {
+            continue;
+        }
 
-    // Sets the input clocking rate.
-    MotorMgr.MotorInputClocking(MotorManager::CLOCK_RATE_LOW);
+        // Serials Coms to the agent arduino via Serial 1 port. 
+        Serial1.begin(baudRate);
+        Serial1.ttl(true); // Tells serial one to use TTL logiv (5V signals)
+        startTime = millis();
+        while (!Serial1 && millis() - startTime < timeout) {
+            continue;
+        }
 
-    // Sets all motor connectors into step and direction mode.
-    MotorMgr.MotorModeSet(MotorManager::MOTOR_ALL,
-                          Connector::CPM_MODE_STEP_AND_DIR);
-
-    // Sets the maximum velocity for each move
-    motor.VelMax(velocityLimit);
-
-    // Set the maximum acceleration for each move
-    motor.AccelMax(accelerationLimit);
-
-    // Sets up serial communication and waits up to 5 seconds for a port to open.
-    // Serial communication is not required for this example to run.
-    Serial.begin(baudRate);
-    uint32_t timeout = 5000;
-    uint32_t startTime = millis();
-    while (!Serial && millis() - startTime < timeout) {
-        continue;
-    }
-
-    // Configure the input pins
-    pinMode(BotInterruptPin, INPUT);
-    pinMode(TopInterruptPin, INPUT);
-
-    // Setup Interrupt for Hard Stop at bottom
-    // Might need to be low, depending on how the switch is configured.)
-    // Attaches to Digital Input 6 
-    attachInterrupt(digitalPinToInterrupt(BotInterruptPin), BottomHardStop, RISING);
-    attachInterrupt(digitalPinToInterrupt(TopInterruptPin), TopHardStop, RISING);
-
-    // Enables output to the motor (must have, even if not using the enable pin on the motor)
-    motor.EnableRequest(true);
-
-    Serial.println("Motor Ready");
+    // Configure the hard stops
+        pinMode(BotInterruptPin, INPUT);
+        pinMode(TopInterruptPin, INPUT);
+        attachInterrupt(digitalPinToInterrupt(BotInterruptPin), BottomHardStop, RISING);
+        attachInterrupt(digitalPinToInterrupt(TopInterruptPin), TopHardStop, RISING);
     
-    // Enable the encoder input feature
-    EncoderIn.Enable(true);
-    // Set the encoder direction
-    EncoderIn.SwapDirection(swapDirection);
-    // Set the sense of index detection (true = rising edge, false = falling edge)
-    EncoderIn.IndexInverted(indexInverted);
+    // Motor Setup
+        // Sets the input clocking rate.
+        MotorMgr.MotorInputClocking(MotorManager::CLOCK_RATE_LOW);
 
-    // Home the motor
-    Serial.println("Homing Motor");
-    motor.MoveVelocity(-1000); // Move down at 1000 pulses/sec, speed may need to be tweaked for safety.  
-      // Wait for interrupt to trigger when hard stop reached, interrupt code will automatically set the 0 position.
-      while (!motor.StepsComplete()) {
-        continue;
-      }
-    // Zero the encoder position to match the zero of the motor. 
-    EncoderIn.Position(0);
+        // Sets all motor connectors into step and direction mode.
+        MotorMgr.MotorModeSet(MotorManager::MOTOR_ALL,
+                            Connector::CPM_MODE_STEP_AND_DIR);
 
-    Serial.println("Homing Complete");
-    delay(3000);
+        // Sets the maximum velocity for each move
+        motor.VelMax(velocityLimit);
+
+        // Set the maximum acceleration for each move
+        motor.AccelMax(accelerationLimit);
+
+        // Enables output to the motor (must have, even if not using the enable pin on the motor)
+        motor.EnableRequest(true);
+
+        // Serial.println("Motor Ready");
+
+        // Home the motor
+        Serial.println("Homing Motor");
+        motor.MoveVelocity(homingVelocity); // Move down, will stop when the hard stop is tripped.  
+        // Wait for interrupt to trigger when hard stop reached, interrupt code will automatically set the 0 position.
+        while (!motor.StepsComplete()) {
+            continue;
+        }
+        
+        Serial.println("Homing Complete");
+
+    // Encoder Setup
+        // Enable the encoder input feature
+        EncoderIn.Enable(true);
+        // Set the encoder direction
+        EncoderIn.SwapDirection(swapDirection);
+        // Set the sense of index detection (true = rising edge, false = falling edge)
+        EncoderIn.IndexInverted(indexInverted);
+        // Zero the encoder position to match the zero of the motor. 
+        EncoderIn.Position(0);
+
+    delay(1000); // Probably don't need this. 
 }
 
 void loop() {
     //Put your main code here, it will run repeatedly:
 
     // Move to middle
-    MoveAbsolutePosition(Pos_Middle,2000);
+    MoveAbsolutePosition(Pos_Middle,2000,255,0);
 
     // "Pause" for 5 seconds by going really slowly. Delay only happens if you are close to the commanded position (Jog mode can make the motor move reaaaallly slowly)
     if(abs(motor.PositionRefCommanded()-Pos_Middle)<10){
-        MoveAbsolutePosition(Pos_Middle+5,1);
+        MoveAbsolutePosition(Pos_Middle+5,1,255,0);
     }
     
     // Move to the top
-    MoveAbsolutePosition(Pos_Top,2000);
+    MoveAbsolutePosition(Pos_Top,2000,255,0);
 
     //Move to the bottom
-    MoveAbsolutePosition(Pos_Bottom,2000);
+    MoveAbsolutePosition(Pos_Bottom,2000,255,0);
 
     // "Pause" for 5 seconds by going really slow
     if(abs(motor.PositionRefCommanded()-Pos_Bottom)<10){
-        MoveAbsolutePosition(Pos_Bottom+5,1);
+        MoveAbsolutePosition(Pos_Bottom+5,1,255,0);
     }  
 }

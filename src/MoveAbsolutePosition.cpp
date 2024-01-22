@@ -1,6 +1,8 @@
 #include "main.h"
 
-void MoveAbsolutePosition(int position, int velocityLimit) {
+int wheelThreshold = 200; // Define what speed the encoder needs to move at for it to be considered a user input (200 pulses/second) 
+
+void MoveAbsolutePosition(int position, int velocityLimit, int brightA, int brightB) {
     // Moves the motor to an absolute position, input is the number of steps away from 0. 
     // Position can be reset 
 
@@ -16,13 +18,16 @@ void MoveAbsolutePosition(int position, int velocityLimit) {
 
     // Waits for all step pulses to output, but it needs to be on the lookout for changes to the encoder in case a user comes up to the piece. 
     while (!motor.StepsComplete()) {
-      
       // Monitor Encoder on Wheel for Changes
       // int32_t Wheel_position = EncoderIn.Position(); // Read the encoder position
       int32_t Wheel_move = EncoderIn.Velocity(); // Read the encoder velocity
-            if(Wheel_move > 20){ // Choose an optimal wheel_velocity to use for this
-        motor.MoveStopDecel(4000); // Stop the motor
+            if(Wheel_move > wheelThreshold){ // Choose an optimal wheel_velocity to use for this
+        motor.MoveStopDecel(motorDecel); // Stop the motor
         WheelControl();
+
+        // Send position and show data to the Agent Arduino for lighting
+        Serial1.print(position);
+
       }
 
       // Monitor the Motor Position to send for the LED array in the control tower. I need to figure out if this actually output the current position of the motor.
@@ -32,6 +37,12 @@ void MoveAbsolutePosition(int position, int velocityLimit) {
       // motor.PositionRefCommanded()
       // Add mapping command here. 
       // Add serial coms here. 
+
+        // Send the values via Serial1
+      
+      Serial1.print(",");
+      Serial1.println(brightA);
+      Serial1.println(brightA);
 
     }
 
