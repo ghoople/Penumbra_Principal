@@ -64,6 +64,7 @@ void WheelControl() {
 
       // This timer makes it so the motor gets updated position commands every motorUpdateInterval seconds
       // Going faster seems to cause unwanted behavior.  
+      // It also tells the agent where the motor is and that a user is controlling it.
       if (millis() - motorStartTime >= motorUpdateInterval) {
         if(wheelPosition > lastWheelPosition){ // Go UP
           motor.VelMax(userSpeed); // Sets the maximum velocity for this move based on the potentiometer
@@ -76,8 +77,12 @@ void WheelControl() {
           motor.Move(Pos_Bottom, MotorDriver::MOVE_TARGET_ABSOLUTE); // Commands the motor move (with no waiting step before commanding additional moves!)
         }
         lastWheelPosition = wheelPosition;
-        motorStartTime = millis();       
+        motorStartTime = millis();
 
+        // Send the motor position to the agent
+        Serial1.print(motor.PositionRefCommanded()); // Tell the Agent where the light is. 
+        Serial1.print(","); 
+        Serial1.println("WheelShow");// Tell the agent we are in the "WheelShow"
       }
     
     motor.MoveStopDecel(motorDecel); // Stop the motor at the deceleration limit (set in main.cpp)

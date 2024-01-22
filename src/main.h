@@ -23,7 +23,7 @@ extern int Home_Offset;
 
 // Function Declarations
 
-void MoveAbsolutePosition(int position, int velocity, int brightA, int brightB);
+void MoveTarget(int position, int velocity, String showName);
 void BottomHardStop();
 void TopHardStop();
 void WheelControl();

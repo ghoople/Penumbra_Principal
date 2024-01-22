@@ -12,8 +12,9 @@
 #define BotInterruptPin DI6
 #define TopInterruptPin DI7
 
-// Select the USB baud rate for the serial device
-#define baudRate 9600
+// Select the baud rate for the serial device
+#define usbBaudRate 9600
+#define agentBaudRate 28800
 
 // Variables to initialize the encoder
 // Set to true if index detection should occur on the falling edge, rather than the rising edge.
@@ -38,7 +39,7 @@ int Home_Offset = 291;
 void setup() {
     // Communications Setup
         // Serial Coms to the USB Port (with timeout)
-        Serial.begin(baudRate);
+        Serial.begin(usbBaudRate);
         uint32_t timeout = 5000; // 5 second timeout
         uint32_t startTime = millis();
         while (!Serial && millis() - startTime < timeout) {
@@ -46,7 +47,7 @@ void setup() {
         }
 
         // Serials Coms to the agent arduino via Serial 1 port. 
-        Serial1.begin(baudRate);
+        Serial1.begin(agentBaudRate);
         Serial1.ttl(true); // Tells serial one to use TTL logiv (5V signals)
         startTime = millis();
         while (!Serial1 && millis() - startTime < timeout) {
@@ -104,22 +105,24 @@ void setup() {
 void loop() {
     //Put your main code here, it will run repeatedly:
 
-    // Move to middle
-    MoveAbsolutePosition(Pos_Middle,2000,255,0);
+    String showName = "MyShow";
+        // Move to middle
+        MoveTarget(Pos_Middle,2000,showName);
 
-    // "Pause" for 5 seconds by going really slowly. Delay only happens if you are close to the commanded position (Jog mode can make the motor move reaaaallly slowly)
-    if(abs(motor.PositionRefCommanded()-Pos_Middle)<10){
-        MoveAbsolutePosition(Pos_Middle+5,1,255,0);
-    }
-    
-    // Move to the top
-    MoveAbsolutePosition(Pos_Top,2000,255,0);
+        // "Pause" for 5 seconds by going really slowly. Delay only happens if you are close to the commanded position (Jog mode can make the motor move reaaaallly slowly)
+        if(abs(motor.PositionRefCommanded()-Pos_Middle)<10){
+            MoveTarget(Pos_Middle+5,1,showName);
+        }
+        
+        // Move to the top
+        MoveTarget(Pos_Top,2000,showName);
 
-    //Move to the bottom
-    MoveAbsolutePosition(Pos_Bottom,2000,255,0);
+        //Move to the bottom
+        MoveTarget(Pos_Bottom,2000,showName);
 
-    // "Pause" for 5 seconds by going really slow
-    if(abs(motor.PositionRefCommanded()-Pos_Bottom)<10){
-        MoveAbsolutePosition(Pos_Bottom+5,1,255,0);
-    }  
+        // "Pause" for 5 seconds by going really slow
+        if(abs(motor.PositionRefCommanded()-Pos_Bottom)<10){
+            MoveTarget(Pos_Bottom+5,1,showName);
+        }  
+
 }
