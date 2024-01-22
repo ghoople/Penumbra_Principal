@@ -2,7 +2,7 @@
 
 int wheelThreshold = 200; // Define what speed the encoder needs to move at for it to be considered a user input (200 pulses/second) 
 
-void MoveTarget(int target, int velocityLimit, String showName) {
+void MoveTarget(int target, int velocityLimit, int showNum) {
     // Moves the motor to an absolute target, target is relative to our home of 0. 
     // target can be reset 
 
@@ -20,7 +20,7 @@ void MoveTarget(int target, int velocityLimit, String showName) {
     /* Waits for all step pulses to output While waiting it needs to: 
     1. Monitor the encoder for velocity changes
     2. Track the position of the motor
-    3. Send position and show name information to the agent arduino.
+    3. Send position and show number information to the agent arduino.
     */
 
     int32_t lastUpdateTime = millis();
@@ -40,7 +40,7 @@ void MoveTarget(int target, int velocityLimit, String showName) {
         // Send target and show data to the Agent Arduino for lighting
         Serial1.print(motor.PositionRefCommanded()); // Tell the Agent where the light is. 
         Serial1.print(","); 
-        Serial1.println(showName);// Tell the agent what show we are doing
+        Serial1.println(showNum);// Tell the agent what show we are doing
         lastUpdateTime = millis(); 
       }
     }

@@ -23,7 +23,7 @@ extern int Home_Offset;
 
 // Function Declarations
 
-void MoveTarget(int position, int velocity, String showName);
+void MoveTarget(int position, int velocity, int showNum);
 void BottomHardStop();
 void TopHardStop();
 void WheelControl();

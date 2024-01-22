@@ -16,13 +16,6 @@
 #define usbBaudRate 9600
 #define agentBaudRate 28800
 
-// Variables to initialize the encoder
-// Set to true if index detection should occur on the falling edge, rather than the rising edge.
-bool indexInverted = false; 
-// Set to true if the sense of encoder direction should be inverted.
-bool swapDirection = false; 
-
-
 // Define the initial velocity limit, acceleration limit, and commanded deceleration to be used for default moves
 int velocityLimit = 2300; // pulses per sec
 int accelerationLimit = 9000; // pulses per sec^2
@@ -90,39 +83,37 @@ void setup() {
         Serial.println("Homing Complete");
 
     // Encoder Setup
-        // Enable the encoder input feature
-        EncoderIn.Enable(true);
-        // Set the encoder direction
-        EncoderIn.SwapDirection(swapDirection);
-        // Set the sense of index detection (true = rising edge, false = falling edge)
-        EncoderIn.IndexInverted(indexInverted);
-        // Zero the encoder position to match the zero of the motor. 
-        EncoderIn.Position(0);
+        EncoderIn.Enable(true); // Enable the encoder input feature      
+        EncoderIn.SwapDirection(false); // Swap direction if you want for the encoder
+        EncoderIn.IndexInverted(false); // Set the sense of index detection (true = rising edge, false = falling edge)
+        EncoderIn.Position(0); // Zero the encoder position to match the zero of the motor. 
 
-    delay(1000); // Probably don't need this. 
+    delay(1000); // Probably don't need this. But can give it all a second to catchup. 
+    Serial.println("Setup complete");
 }
 
 void loop() {
     //Put your main code here, it will run repeatedly:
 
-    String showName = "MyShow";
+    int showNum = 1;
+    int showVel = 2000;
         // Move to middle
-        MoveTarget(Pos_Middle,2000,showName);
+        MoveTarget(Pos_Middle,showVel,showNum);
 
         // "Pause" for 5 seconds by going really slowly. Delay only happens if you are close to the commanded position (Jog mode can make the motor move reaaaallly slowly)
         if(abs(motor.PositionRefCommanded()-Pos_Middle)<10){
-            MoveTarget(Pos_Middle+5,1,showName);
+            MoveTarget(Pos_Middle+5,1,showNum);
         }
         
         // Move to the top
-        MoveTarget(Pos_Top,2000,showName);
+        MoveTarget(Pos_Top,showVel,showNum);
 
         //Move to the bottom
-        MoveTarget(Pos_Bottom,2000,showName);
+        MoveTarget(Pos_Bottom,showVel,showNum);
 
         // "Pause" for 5 seconds by going really slow
         if(abs(motor.PositionRefCommanded()-Pos_Bottom)<10){
-            MoveTarget(Pos_Bottom+5,1,showName);
+            MoveTarget(Pos_Bottom+5,1,showNum);
         }  
 
 }
