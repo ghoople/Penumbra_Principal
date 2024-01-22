@@ -1,4 +1,3 @@
-
 #include "main.h"
 
 void MoveAbsolutePosition(int position, int velocityLimit) {
@@ -19,9 +18,9 @@ void MoveAbsolutePosition(int position, int velocityLimit) {
     while (!motor.StepsComplete()) {
       
       // Monitor Encoder on Wheel for Changes
-      Wheel_position = EncoderIn.Position(); // Read the encoder position
-      Wheel_velocity = EncoderIn.Velocity(); // Read the encoder velocity
-            if(Wheel_velocity > 20){ // Choose an optimal wheel_velocity to use for this
+      // int32_t Wheel_position = EncoderIn.Position(); // Read the encoder position
+      int32_t Wheel_move = EncoderIn.Velocity(); // Read the encoder velocity
+            if(Wheel_move > 20){ // Choose an optimal wheel_velocity to use for this
         motor.MoveStopDecel(4000); // Stop the motor
         WheelControl();
       }

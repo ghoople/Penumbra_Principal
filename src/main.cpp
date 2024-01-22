@@ -4,15 +4,7 @@
  *  This is the primary code base that will run on the clear core.
  * 
  */
-#include <Arduino.h>
-#include <ClearCore.h>
-
-// Specifies which motor to move.
-// Options are: ConnectorM0, ConnectorM1, ConnectorM2, or ConnectorM3.
-#define motor ConnectorM0
-
-// Select the baud rate to match the target serial device
-#define baudRate 9600
+#include "main.h"
 
 // Configure Interrupts
 // Pins that support digital interrupts are:
@@ -20,21 +12,14 @@
 #define BotInterruptPin DI6
 #define TopInterruptPin DI7
 
-// Variables to store encoder state
-int32_t Wheel_position = 0;
-int32_t last_Wheel_position = 0;
-int32_t Wheel_velocity = 0;
-int32_t indexPosition = 0;
-int32_t lastIndexPosition = 0;
-bool quadratureError = false;
+// Select the baud rate to match the target serial device
+#define baudRate 9600
 
+// Variables to initialize the encoder
 // Set to true if index detection should occur on the falling edge, rather than the rising edge.
 bool indexInverted = false; 
 // Set to true if the sense of encoder direction should be inverted.
 bool swapDirection = false; 
-
-// Create Variables for the state of the inputs
-int User_Speed = 0; 
 
 // Define the initial velocity and acceleration limits to be used for default moves
 int velocityLimit = 2300; // pulses per sec
@@ -46,14 +31,6 @@ int Pos_Bottom = 0;
 int Pos_Top = 7858;
 int Pos_Middle = Pos_Top/2;
 int Home_Offset = 291;
-
-
-// Declare functions included in this file
-void MoveAbsolutePosition(int position, int velocity); //Function to command movement
-void BottomHardStop(); // Interrupt for when the bottom hard stop is triggered
-void TopHardStop();  // Interrupt for when the top hard stop is triggered
-void WheelControl(); // Loop to enter for user control
-
 
 void setup() {
     // This setup function only runs once

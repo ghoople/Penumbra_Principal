@@ -4,6 +4,13 @@ void WheelControl() {
     // The motor will follow user input on a wheel as measured by an encoder. 
     Serial.println("Entering the Wheel Control Loop ");
 
+    int32_t Wheel_position = 0;
+    int32_t last_Wheel_position = 0;
+    int32_t Wheel_velocity = 0;
+    //int32_t indexPosition = 0;
+    //int32_t lastIndexPosition = 0;
+    //bool quadratureError = false;
+
     // Create a timer to keep us in the while loop for X seconds
     uint32_t Wheel_timeout = 10000; //10 seconds
     uint32_t Wheel_startTime = millis();
@@ -19,7 +26,7 @@ void WheelControl() {
         // 250 RPM (Seems hard to imagine going that fast) = 4167 counts/second  
       // Motor: (Pulse output)
         // 0 - 3000 seems reasonable to start, may want to adjust
-      User_Speed = map(Wheel_velocity,0,4000,0,3000);
+      int User_Speed = map(Wheel_velocity,0,4000,0,3000);
 
       if(Wheel_position > last_Wheel_position){ // Go UP
         motor.VelMax(User_Speed); // Sets the maximum velocity for this move based on the potentiometer

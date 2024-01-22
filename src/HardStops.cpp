@@ -1,3 +1,5 @@
+// Interrupt functions that are called when a sensor at either hardstop is tripped. 
+
 #include "main.h"
 
 void BottomHardStop() {
