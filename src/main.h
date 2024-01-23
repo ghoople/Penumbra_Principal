@@ -23,9 +23,11 @@ extern int Home_Offset;
 
 // Function Declarations
 
-void MoveTarget(int position, int velocity, int showNum);
+void Pause(int pauseTime, int* halA, int* halB);
+void MoveTarget(int target, int velocityLimit, int* halA, int* halB);
 void BottomHardStop();
 void TopHardStop();
 void WheelControl();
+void Animation(int showNum);
 
 #endif // MAIN_H

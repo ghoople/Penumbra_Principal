@@ -1,10 +1,20 @@
 #include "main.h"
 
 int wheelThreshold = 200; // Define what speed the encoder needs to move at for it to be considered a user input (200 pulses/second) 
+int currentPos;
+int startPos; 
 
-// Fix this function definition to reflect my arrays
+void Pause(int pauseTime, int* halA, int* halB){
+  currentPos = motor.PositionRefCommanded();
+  if(currentPos>Pos_Middle){ // In the top half
+    MoveTarget(currentPos-pauseTime,1,halA,halB); // Move at 1 pulse per second for pauseTime steps
+    }
+  else{ // In bottom half
+    MoveTarget(currentPos+pauseTime,1,halA,halB); // Move at 1 pulse per second for pauseTime steps
+  }
+}
 
-void MoveTarget(int target, int velocityLimit, int halogenA, int halogenB) {
+void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
     // Moves the motor to an absolute target, target is relative to our home of 0. 
     // target can be reset 
 
@@ -13,16 +23,18 @@ void MoveTarget(int target, int velocityLimit, int halogenA, int halogenB) {
     //Serial.print("Moving to absolute target: ");
     //Serial.println(target);
 
+    startPos = motor.PositionRefCommanded(); // Where is the motor now? 
+
     // Sets the maximum velocity for this move
     motor.VelMax(velocityLimit);
 
     // Command the move of absolute distance
     motor.Move(target, MotorDriver::MOVE_TARGET_ABSOLUTE);
 
-    /* Waits for all step pulses to output While waiting it needs to: 
-    1. Monitor the encoder for velocity changes
+    /* Waits for all step pulses to output. While waiting it needs to: 
+    1. Monitor the encoder for velocity changes (so user can take over)
     2. Track the position of the motor
-    3. Send position and show number information to the agent arduino.
+    3. Send the motor position and corresponding light data to the agent arduino.
     */
 
     int32_t lastUpdateTime = millis();
@@ -36,16 +48,21 @@ void MoveTarget(int target, int velocityLimit, int halogenA, int halogenB) {
         motor.MoveStopDecel(motorDecel); // Stop the motor
         WheelControl(); // Go to wheel control
       }
+
       // Timer for updating the arduino agent with position and show data. 
       if (millis() - lastUpdateTime >= updateInterval) {
         // Send target and show data to the Agent Arduino for lighting
-        Serial1.print(motor.PositionRefCommanded()); // Tell the Agent where the light is. 
+        currentPos = motor.PositionRefCommanded();
+
+        move_percent = // Write this logic, will need to know where it started. Calculates from start position, current position, and target position. 
+
+        Serial1.print(currentPos); // Tell the Agent where the light is. 
         Serial1.print(","); 
-        Serial1.println(showNum);// Tell the agent what show we are doing
+        Serial1.println("TBD");// Tell the agent what show we are doing
         lastUpdateTime = millis(); 
       }
 
-      // Update the HalogenA
+      // Update the halA
 
 
     }

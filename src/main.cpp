@@ -93,29 +93,7 @@ void setup() {
 }
 
 void loop() {
-    //Put your main code here, it will run repeatedly:
-
-    int showNum = 1;
-    int showVel = 2000;
-        //Move to the bottom
-        MoveTarget(Pos_Bottom,showVel,showNum);
-        
-        // Move to middle
-        MoveTarget(Pos_Middle,showVel,showNum);
-
-        // "Pause" for 5 seconds by going really slowly. Delay only happens if you are close to the commanded position (Jog mode can make the motor move reaaaallly slowly)
-        if(abs(motor.PositionRefCommanded()-Pos_Middle)<10){
-            MoveTarget(Pos_Middle+5,1,showNum);
-        }
-        
-        // Move to the top
-        MoveTarget(Pos_Top,showVel,showNum);
-
-        
-
-        // "Pause" for 5 seconds by going really slow
-        if(abs(motor.PositionRefCommanded()-Pos_Bottom)<10){
-            MoveTarget(Pos_Bottom+5,1,showNum);
-        }  
-
+    //Animation Order Defined Here
+    Animation(1);
+    
 }
