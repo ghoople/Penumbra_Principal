@@ -97,6 +97,9 @@ void loop() {
 
     int showNum = 1;
     int showVel = 2000;
+        //Move to the bottom
+        MoveTarget(Pos_Bottom,showVel,showNum);
+        
         // Move to middle
         MoveTarget(Pos_Middle,showVel,showNum);
 
@@ -108,8 +111,7 @@ void loop() {
         // Move to the top
         MoveTarget(Pos_Top,showVel,showNum);
 
-        //Move to the bottom
-        MoveTarget(Pos_Bottom,showVel,showNum);
+        
 
         // "Pause" for 5 seconds by going really slow
         if(abs(motor.PositionRefCommanded()-Pos_Bottom)<10){

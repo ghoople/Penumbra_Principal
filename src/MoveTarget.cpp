@@ -2,7 +2,9 @@
 
 int wheelThreshold = 200; // Define what speed the encoder needs to move at for it to be considered a user input (200 pulses/second) 
 
-void MoveTarget(int target, int velocityLimit, int showNum) {
+// Fix this function definition to reflect my arrays
+
+void MoveTarget(int target, int velocityLimit, int halogenA, int halogenB) {
     // Moves the motor to an absolute target, target is relative to our home of 0. 
     // target can be reset 
 
@@ -34,7 +36,6 @@ void MoveTarget(int target, int velocityLimit, int showNum) {
         motor.MoveStopDecel(motorDecel); // Stop the motor
         WheelControl(); // Go to wheel control
       }
-
       // Timer for updating the arduino agent with position and show data. 
       if (millis() - lastUpdateTime >= updateInterval) {
         // Send target and show data to the Agent Arduino for lighting
@@ -43,6 +44,10 @@ void MoveTarget(int target, int velocityLimit, int showNum) {
         Serial1.println(showNum);// Tell the agent what show we are doing
         lastUpdateTime = millis(); 
       }
+
+      // Update the HalogenA
+
+
     }
 		Serial.println("Absolute target Move Complete");
 }
