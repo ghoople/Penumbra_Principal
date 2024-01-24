@@ -4,6 +4,8 @@
 It allows the user to control the light for a defined interval of time. 
 */
 
+// New comment
+
 /* Set the Maximum speeds for mapping the encoder speed to the motor speed. 
   For the Encoder: 
     1 revolution in 5 seconds on the wheel = 200 counts/second
