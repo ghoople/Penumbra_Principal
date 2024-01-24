@@ -9,7 +9,7 @@ int halBIndex;
 
 void Pause(int pauseTime, int* halA, int* halB){
   currentPos = motor.PositionRefCommanded();
-  if(currentPos>Pos_Middle){ // In the top half
+  if(currentPos>Mid){ // In the top half
     MoveTarget(currentPos-pauseTime,1,halA,halB); // Move at 1 pulse per second for pauseTime steps
     }
   else{ // In bottom half

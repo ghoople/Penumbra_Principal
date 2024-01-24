@@ -38,5 +38,5 @@ void TopHardStop() {
 
     // Zero the motor's reference position after homing to allow for accurate absolute position moves
 
-    motor.PositionRefSet(Pos_Top);   //Defined in global variables.  
+    motor.PositionRefSet(Top);   //Defined in global variables.  
 }

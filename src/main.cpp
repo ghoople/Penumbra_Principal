@@ -6,28 +6,22 @@
  */
 #include "main.h"
 
-// Configure Interrupts
-// Pins that support digital interrupts are:
+
+// Configure Interrupt Pins for the hard stops
+// Pins that support digital interrupts on clear core are:
 // DI-6, DI-7, DI-8, A-9, A-10, A-11, A-12
 #define BotInterruptPin DI6
 #define TopInterruptPin DI7
 
-// Select the baud rate for the serial device
+// Define the baud rate for the serial devices
 #define usbBaudRate 9600
 #define agentBaudRate 28800
+
 
 // Define the initial velocity limit, acceleration limit, and commanded deceleration to be used for default moves
 int velocityLimit = 2300; // pulses per sec
 int accelerationLimit = 9000; // pulses per sec^2
-int motorDecel = 4000; //Defines how quickly the motor should decelerate when switching to user mode. 
-int homingVelocity = -2000; //Velocity to home the motor. 
-
-// Define the physical relationship between steps and light position
-// See "Penumbra Motor Calculations" google sheet for value calculator
-int Pos_Bottom = 0; 
-int Pos_Top = 7858;
-int Pos_Middle = Pos_Top/2;
-int Home_Offset = 291;
+#define homingVelocity -2000 //Velocity to home the motor. 
 
 void setup() {
     // Communications Setup
@@ -95,5 +89,6 @@ void setup() {
 void loop() {
     //Animation Order Defined Here
     Animation(1);
-    
+    Animation(2);
+    Animation(3);
 }

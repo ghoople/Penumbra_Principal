@@ -68,13 +68,13 @@ void WheelControl() {
       if (millis() - motorStartTime >= motorUpdateInterval) {
         if(wheelPosition > lastWheelPosition){ // Go UP
           motor.VelMax(userSpeed); // Sets the maximum velocity for this move based on the potentiometer
-          motor.Move(Pos_Top, MotorDriver::MOVE_TARGET_ABSOLUTE); // Commands the motor move (with no waiting step before commanding additional moves!)
+          motor.Move(Top, MotorDriver::MOVE_TARGET_ABSOLUTE); // Commands the motor move (with no waiting step before commanding additional moves!)
           //Serial.print("Moving up at user speed: ");
           //Serial.println(userSpeed);
         }
         else{ // Go Down
           motor.VelMax(userSpeed); // Sets the maximum velocity for this move based on the userSpeed
-          motor.Move(Pos_Bottom, MotorDriver::MOVE_TARGET_ABSOLUTE); // Commands the motor move (with no waiting step before commanding additional moves!)
+          motor.Move(Bot, MotorDriver::MOVE_TARGET_ABSOLUTE); // Commands the motor move (with no waiting step before commanding additional moves!)
         }
         lastWheelPosition = wheelPosition;
         motorStartTime = millis();
