@@ -1,7 +1,6 @@
 #include "main.h"
 
 int moveVel; // Defined here as it is ONLY used by this function, but we don't need to initialize it every time the function is called. 
-#define halIndexLength 100 // How long the array is for the 
 int halA [halIndexLength];
 int halB [halIndexLength];
 

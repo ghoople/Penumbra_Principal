@@ -10,6 +10,8 @@
 // Options are: ConnectorM0, ConnectorM1, ConnectorM2, or ConnectorM3.
 #define motor ConnectorM0
 
+// Define how long the index is for the halogen lighting array. Can't be an int. 
+#define halIndexLength 100 // How long the array is for the 
 
 // Alert compiler to key global variables. 
 // These don't get passed to functions, but are used by them. 

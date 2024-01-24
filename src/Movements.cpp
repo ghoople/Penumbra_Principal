@@ -1,8 +1,11 @@
 #include "main.h"
 
 int wheelThreshold = 200; // Define what speed the encoder needs to move at for it to be considered a user input (200 pulses/second) 
-int currentPos;
-int startPos; 
+int currentPos; // Where halA currently is. 
+int startPos; // Where halA ligth starts. 
+int moveDist; // Distance of the commanded move. 
+int halAIndex;
+int halBIndex;
 
 void Pause(int pauseTime, int* halA, int* halB){
   currentPos = motor.PositionRefCommanded();
@@ -24,6 +27,7 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
     //Serial.println(target);
 
     startPos = motor.PositionRefCommanded(); // Where is the motor now? 
+    moveDist = abs(target - startPos); // Calculate the distance of the prescribed move.
 
     // Sets the maximum velocity for this move
     motor.VelMax(velocityLimit);
@@ -47,24 +51,26 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
       if(Wheel_move > wheelThreshold){ // Choose an optimal wheel_velocity to use for this
         motor.MoveStopDecel(motorDecel); // Stop the motor
         WheelControl(); // Go to wheel control
-      }
+      }     
 
       // Timer for updating the arduino agent with position and show data. 
       if (millis() - lastUpdateTime >= updateInterval) {
         // Send target and show data to the Agent Arduino for lighting
         currentPos = motor.PositionRefCommanded();
 
-        move_percent = // Write this logic, will need to know where it started. Calculates from start position, current position, and target position. 
+        // Calculate the percentage of the way you are to the end of the move, this is your index 
+        halAIndex = round(abs(currentPos - target)/moveDist * halIndexLength); // 
+        halBIndex = round(abs(currentPos - target)/moveDist * halIndexLength);
+
+        // Write this logic, will need to know where it started. Calculates from start position, current position, and target position. 
 
         Serial1.print(currentPos); // Tell the Agent where the light is. 
         Serial1.print(","); 
-        Serial1.println("TBD");// Tell the agent what show we are doing
+        Serial1.println(halA[halAIndex]);// Tell the agent what to do with halA
+        Serial1.print(","); 
+        Serial1.println(halB[halBIndex]);// Tell the agent what to do with halA
         lastUpdateTime = millis(); 
       }
-
-      // Update the halA
-
-
     }
-		Serial.println("Absolute target Move Complete");
+		Serial.println("Move Complete");
 }
