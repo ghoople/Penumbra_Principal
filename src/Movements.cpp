@@ -66,9 +66,9 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
 
         Serial1.print(currentPos); // Tell the Agent where the light is. 
         Serial1.print(","); 
-        Serial1.println(halA[halAIndex]);// Tell the agent what to do with halA
+        Serial1.println(halA[halAIndex]);// Tell the agent what the intensity should be for halA
         Serial1.print(","); 
-        Serial1.println(halB[halBIndex]);// Tell the agent what to do with halA
+        Serial1.println(halB[halBIndex]);// Tell the agent what the intensity should be for halB
         lastUpdateTime = millis(); 
       }
     }
