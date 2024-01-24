@@ -42,7 +42,7 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
     */
 
     int32_t lastUpdateTime = millis();
-    int32_t updateInterval = 50; //  ms delay between updates to the arduino. Could go faster depending on the Baudrate? May not even need this?  
+    unsigned long updateInterval = 50; //  ms delay between updates to the arduino. Could go faster depending on the Baudrate? May not even need this?  
 
     while (!motor.StepsComplete()) {
 
