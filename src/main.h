@@ -6,7 +6,6 @@
 #include <Arduino.h>
 #include <ClearCore.h>
 
-#define debug true // Set to true to print debug statements.
 
 // My code (and example code) uses motor instead of the connector name. 
 // Options are: ConnectorM0, ConnectorM1, ConnectorM2, or ConnectorM3.

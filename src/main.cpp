@@ -15,14 +15,15 @@
 
 // Define the baud rate for the serial devices
 #define usbBaudRate 9600
-#define agentBaudRate 28800
+#define agentBaudRate 9600
 
 // Define the initial velocity limit, acceleration limit, and commanded deceleration to be used for default moves
 #define initialVelocityLimit 2000 // pulses per sec
 
-#define homingVelocity 1000 //Velocity to home the motor. 
+#define homingVelocity 500 //Velocity to home the motor. 
 
 void setup() {
+    bool debug = true;
     // Communications Setup
         // Serial Coms to the USB Port (with timeout)
         Serial.begin(usbBaudRate);
@@ -87,7 +88,18 @@ void setup() {
 
 void loop() {
     //Animation Order Defined Here
+
+// This sets the motor to go to the bottom, just needed for blackbox demo. 
+    motor.VelMax(1000);
+    // Command the move of absolute distance
+    motor.Move(Bot, MotorDriver::MOVE_TARGET_ABSOLUTE);
+    while (!motor.StepsComplete()) {
+        continue;}
+
     Animation(1);
     Animation(2);
-    Animation(3);
+    Animation(4);
+
+    Serial.println("Animation Loop Complete");
+    delay(5000);
 }

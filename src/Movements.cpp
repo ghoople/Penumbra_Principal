@@ -11,20 +11,21 @@ void Pause(int pauseTime, int* halA, int* halB){
 }
 
 void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
+    bool debug = false;
     int wheelThreshold = 200; // Define what speed the encoder needs to move at for it to be considered a user input (200 pulses/second) 
-    int currentPos; // Where halA currently is. 
-    int startPos; // Where halA ligth starts. 
+    int currentPos=0; // Where halA currently is. 
+    int startPos=0; // Where halA ligth starts. 
     int moveDist; // Distance of the commanded move. 
-    int halAIndex; // Index of the halA array
-    int halBIndex; // Index of the halB array
+    int halAIndex=0; // Index of the halA array
+    int halBIndex=0; // Index of the halB array
     unsigned long updateInterval; // Declare the variable outside the if-else blocks
 
     // Set the update interval for the arduino agent, based on debug mode.
     if(debug){
-      updateInterval = 500; // Assign the value inside the if-else blocks
+      updateInterval = 1000; // 1 second update interval
     }
     else{
-      updateInterval = 50; // Assign the value inside the if-else blocks
+      updateInterval = 50; // 50 ms update interval
     }
 
     if(debug){
@@ -37,7 +38,7 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
 
     // Moves the motor to an absolute target, target is relative to our home of 0. 
     startPos = motor.PositionRefCommanded(); // Where is the motor now? 
-    moveDist = abs(target - startPos); // Calculate the distance of the prescribed move.
+    moveDist = abs(target - startPos)+1; // Calculate the distance of the prescribed move, add 1 to avoid divide by 0 error.
 
     // Sets the maximum velocity for this move
     motor.VelMax(velocityLimit);
@@ -67,24 +68,54 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
         // Send target and show data to the Agent Arduino for lighting
         currentPos = motor.PositionRefCommanded();
 
+/*
+// Before calculations
+Serial.println("Before calculations:");
+Serial.print("currentPos: "); Serial.println(currentPos);
+Serial.print("target: "); Serial.println(target);
+Serial.print("moveDist: "); Serial.println(moveDist);
+Serial.print("halIndexLength: "); Serial.println(halIndexLength);
+Serial.print("halAIndex: "); Serial.println(halAIndex);
+Serial.print("halBIndex: "); Serial.println(halBIndex);
+*/
+
         // Calculate the percentage of the way you are to the end of the move, this is your index 
-        halAIndex = round(abs(currentPos - target)/moveDist * halIndexLength); // 
-        halBIndex = round(abs(currentPos - target)/moveDist * halIndexLength);
+        halAIndex = abs(currentPos - target)/moveDist * halIndexLength; // 
+        halBIndex = abs(currentPos - target)/moveDist * halIndexLength;
+
+// After calculations
+//Serial.println("After calculations:");
+//Serial.print("halAIndex: "); Serial.println(halAIndex);
+//Serial.print("halBIndex: "); Serial.println(halBIndex);
 
         // Send the data to the agent arduino
         Serial1.print(currentPos); // Tell the Agent where the light is. 
         Serial1.print(","); 
-        Serial1.println(halA[halAIndex]);// Tell the agent what the intensity should be for halA
+        Serial1.print(halA[halAIndex]);// Tell the agent what the intensity should be for halA
         Serial1.print(","); 
         Serial1.println(halB[halBIndex]);// Tell the agent what the intensity should be for halB
 
-        // Print debug statements
-        if(debug){Serial.println("Current Position: " + String(currentPos) + ", Intensity for halA: " + 
-          String(halA[halAIndex]) + ", Intensity for halB: " + String(halB[halBIndex]));}
+        // Print debug statements to Serial Monitor
+        if(debug){
+          
+          //Serial.println("Current Position: " + String(currentPos) + ", Intensity for halA: " + 
+          //String(halA[halAIndex]) + ", Intensity for halB: " + String(halB[halBIndex]));
+          
+          
+          Serial.print(currentPos); // Tell the Agent where the light is. 
+          Serial.print(","); 
+          Serial.print(halA[halAIndex]);// Tell the agent what the intensity should be for halA
+          Serial.print(","); 
+          Serial.println(halB[halBIndex]);// Tell the agent what the intensity should be for halB
+          //Serial.print("halA index:" + String(halAIndex));
+          //Serial.println("halB index:" + String(halBIndex));
+        
+        }
     
         lastUpdateTime = millis(); // Reset the timer
       }
     }
+
 		if(debug){Serial.println("Move Complete");}
     
 }
