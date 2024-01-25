@@ -10,8 +10,8 @@
 // Configure Interrupt Pins for the hard stops
 // Pins that support digital interrupts on clear core are:
 // DI-6, DI-7, DI-8, A-9, A-10, A-11, A-12
-#define BotInterruptPin DI6
-#define TopInterruptPin DI7
+#define BotInterruptPin A10
+#define TopInterruptPin A11
 
 // Define the baud rate for the serial devices
 #define usbBaudRate 9600
@@ -21,7 +21,7 @@
 // Define the initial velocity limit, acceleration limit, and commanded deceleration to be used for default moves
 int velocityLimit = 2300; // pulses per sec
 int accelerationLimit = 9000; // pulses per sec^2
-#define homingVelocity -2000 //Velocity to home the motor. 
+#define homingVelocity -1000 //Velocity to home the motor. 
 
 void setup() {
     // Communications Setup

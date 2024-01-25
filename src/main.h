@@ -14,9 +14,9 @@
 // Define the physical relationship between steps and light position
 // See "Penumbra Motor Calculations" google sheet for value calculator
 #define Bot 0 
-#define Top 7858
+#define Top 7840 // Blackbox Demo
 #define Mid Top/2
-#define Home_Offset 291
+#define Home_Offset 0 // Blackbox Demo offset (manual home button)
 
 // Define how long the index is for the halogen lighting array. Can't be an int. 
 #define halIndexLength 100

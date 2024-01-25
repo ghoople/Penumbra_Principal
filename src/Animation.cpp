@@ -5,7 +5,7 @@ int halA [halIndexLength];
 int halB [halIndexLength];
 
 // Velocities, in pulses/second, for the light movements. 
-#define fast 4000
+#define fast 3000
 #define med 2000
 #define slow 1000
 
