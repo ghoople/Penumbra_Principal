@@ -1,9 +1,5 @@
 #include "main.h"
 
-int moveVel; // How fast the move
-int halA [halIndexLength];
-int halB [halIndexLength];
-
 // Velocities, in pulses/second, for the light movements. 
 #define fast 3000
 #define med 2000
@@ -19,6 +15,12 @@ int halB [halIndexLength];
 // After homing the motor will start at the bottom. 
 
 void Animation(int showNum) {
+
+// Define variables
+int moveVel; // How fast the move
+int halA [halIndexLength];
+int halB [halIndexLength];
+
 switch (showNum) {
   case 1: // Move to the Top and back to the Bottom. Lights on only when going up.  
         moveVel = fast;

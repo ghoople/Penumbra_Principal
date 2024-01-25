@@ -17,11 +17,10 @@
 #define usbBaudRate 9600
 #define agentBaudRate 28800
 
-
 // Define the initial velocity limit, acceleration limit, and commanded deceleration to be used for default moves
-int velocityLimit = 2300; // pulses per sec
-int accelerationLimit = 9000; // pulses per sec^2
-#define homingVelocity -1000 //Velocity to home the motor. 
+#define initialVelocityLimit 2000 // pulses per sec
+
+#define homingVelocity 1000 //Velocity to home the motor. 
 
 void setup() {
     // Communications Setup
@@ -56,7 +55,7 @@ void setup() {
                             Connector::CPM_MODE_STEP_AND_DIR);
 
         // Sets the maximum velocity for each move
-        motor.VelMax(velocityLimit);
+        motor.VelMax(initialVelocityLimit);
 
         // Set the maximum acceleration for each move
         motor.AccelMax(accelerationLimit);
@@ -83,7 +82,7 @@ void setup() {
         EncoderIn.Position(0); // Zero the encoder position to match the zero of the motor. 
 
     delay(1000); // Probably don't need this. But can give it all a second to catchup. 
-    Serial.println("Setup complete");
+    if(debug){Serial.println("Setup complete");}
 }
 
 void loop() {

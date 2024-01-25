@@ -1,14 +1,7 @@
 #include "main.h"
 
-int wheelThreshold = 200; // Define what speed the encoder needs to move at for it to be considered a user input (200 pulses/second) 
-int currentPos; // Where halA currently is. 
-int startPos; // Where halA ligth starts. 
-int moveDist; // Distance of the commanded move. 
-int halAIndex;
-int halBIndex;
-
 void Pause(int pauseTime, int* halA, int* halB){
-  currentPos = motor.PositionRefCommanded();
+  int currentPos = motor.PositionRefCommanded();
   if(currentPos>Mid){ // In the top half
     MoveTarget(currentPos-pauseTime,1,halA,halB); // Move at 1 pulse per second for pauseTime steps
     }
@@ -18,14 +11,31 @@ void Pause(int pauseTime, int* halA, int* halB){
 }
 
 void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
+    int wheelThreshold = 200; // Define what speed the encoder needs to move at for it to be considered a user input (200 pulses/second) 
+    int currentPos; // Where halA currently is. 
+    int startPos; // Where halA ligth starts. 
+    int moveDist; // Distance of the commanded move. 
+    int halAIndex; // Index of the halA array
+    int halBIndex; // Index of the halB array
+    unsigned long updateInterval; // Declare the variable outside the if-else blocks
+
+    // Set the update interval for the arduino agent, based on debug mode.
+    if(debug){
+      updateInterval = 500; // Assign the value inside the if-else blocks
+    }
+    else{
+      updateInterval = 50; // Assign the value inside the if-else blocks
+    }
+
+    if(debug){
+      Serial.println("Moving to absolute target: " + String(target));
+      Serial.print("Current target is: ");
+      Serial.println(motor.PositionRefCommanded());
+      Serial.print("Moving to absolute target: ");
+      Serial.println(target);
+    }
+
     // Moves the motor to an absolute target, target is relative to our home of 0. 
-    // target can be reset 
-
-    //Serial.print("Current target is: ");
-    //Serial.println(motor.PositionRefCommanded());
-    //Serial.print("Moving to absolute target: ");
-    //Serial.println(target);
-
     startPos = motor.PositionRefCommanded(); // Where is the motor now? 
     moveDist = abs(target - startPos); // Calculate the distance of the prescribed move.
 
@@ -42,7 +52,6 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
     */
 
     int32_t lastUpdateTime = millis();
-    unsigned long updateInterval = 50; //  ms delay between updates to the arduino. Could go faster depending on the Baudrate? May not even need this?  
 
     while (!motor.StepsComplete()) {
 
@@ -62,15 +71,20 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
         halAIndex = round(abs(currentPos - target)/moveDist * halIndexLength); // 
         halBIndex = round(abs(currentPos - target)/moveDist * halIndexLength);
 
-        // Write this logic, will need to know where it started. Calculates from start position, current position, and target position. 
-
+        // Send the data to the agent arduino
         Serial1.print(currentPos); // Tell the Agent where the light is. 
         Serial1.print(","); 
         Serial1.println(halA[halAIndex]);// Tell the agent what the intensity should be for halA
         Serial1.print(","); 
         Serial1.println(halB[halBIndex]);// Tell the agent what the intensity should be for halB
-        lastUpdateTime = millis(); 
+
+        // Print debug statements
+        if(debug){Serial.println("Current Position: " + String(currentPos) + ", Intensity for halA: " + 
+          String(halA[halAIndex]) + ", Intensity for halB: " + String(halB[halBIndex]));}
+    
+        lastUpdateTime = millis(); // Reset the timer
       }
     }
-		Serial.println("Move Complete");
+		if(debug){Serial.println("Move Complete");}
+    
 }
