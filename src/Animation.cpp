@@ -119,7 +119,7 @@ int halB [halIndexLength];
             if(debug){Serial.println("Target: Bot, A: Off, B: Ramp");}
 
         break;
-    case 4:
+    case 4: // Need to add debug outputs still. 
         moveVel = slow;
         // Step 1: Move to the top with the lights on
         // Ramp halA and halB for entire move

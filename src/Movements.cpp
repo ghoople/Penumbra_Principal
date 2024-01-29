@@ -30,10 +30,8 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
 
     if(debug){
       Serial.println("Moving to absolute target: " + String(target));
-      Serial.print("Current target is: ");
+      Serial.print("Current position is: ");
       Serial.println(motor.PositionRefCommanded());
-      Serial.print("Moving to absolute target: ");
-      Serial.println(target);
     }
 
     // Moves the motor to an absolute target, target is relative to our home of 0. 
