@@ -6,9 +6,9 @@
 #define slow 500
 
 // DMX Brightness Levels, range is 0 -> 255
-#define maxBright 40
+#define maxBright 80
 #define midBright 20
-#define lowBright 2
+#define lowBright 5
 #define off 0
 
 // By Convention all animations should end at the bottom (So you can assume you are starting from the bottom) 
@@ -30,15 +30,15 @@ int halB [halIndexLength];
                 halA[i] = maxBright;
                 halB[i] = maxBright;
             }
-            MoveTarget(Top,moveVel,halA,halB);
             if(debug){
                 Serial.println("Running Animation 1: Max and Low");
                 Serial.println("Target: Top, A: Max, B: Max");
             }
+            MoveTarget(Top,moveVel,halA,halB);
 
             // Step 2: Pause
-            Pause(2,halA,halB); // pause for 2 seconds
             if(debug){Serial.println("Target: Pause, A: Max, B: Max");}
+            Pause(2,halA,halB); // pause for 2 seconds
             
             // Step 3: Move to the bottom, lights low
             // Set halA and halB to the max brightness everywhere
@@ -46,8 +46,8 @@ int halB [halIndexLength];
                 halA[i] = lowBright;
                 halB[i] = lowBright;
             }
-            MoveTarget(Bot,moveVel,halA,halB);
             if(debug){Serial.println("Target: Bot, A: Low, B: Low");}
+            MoveTarget(Bot,moveVel,halA,halB);
 
         break;
     case 2: // Lights are on when they are moving up only. 
@@ -64,11 +64,12 @@ int halB [halIndexLength];
             for (int i = 0; i < halIndexLength; i++) {
                 halB[i] = off;
             }        
-            MoveTarget(Top,moveVel,halA,halB);
             if(debug){
                 Serial.println("Running Animation 2: Swap Lights");
                 Serial.println("Target: Top, A: Max, B: Off");
             }
+            MoveTarget(Top,moveVel,halA,halB);
+
             // Step 2: Move to the bottom, swap the lights
             // Turn halA off for entire move
 
@@ -82,28 +83,30 @@ int halB [halIndexLength];
                 halB[i] = maxBright;
             }        
 
-            MoveTarget(Bot,moveVel,halA,halB);
             if(debug){Serial.println("Target: Bot, A: Off, B: Max");}
+            MoveTarget(Bot,moveVel,halA,halB);
 
         break;
     case 3: // Ramp the brightness of A on way up, B on way down.  
-            moveVel = slow;
+            moveVel = med;
 
             // Step 1: Move to the top with the lights on
             // Turn halA on for entire move
             for (int i = 0; i < halIndexLength; i++) {
-                halA[i] = i/halIndexLength * maxBright;
+                halA[i] = (float)i/halIndexLength * maxBright;
             }
 
             // Turn halB off for entire move 
             for (int i = 0; i < halIndexLength; i++) {
                 halB[i] = off;
             }        
-            MoveTarget(Top,moveVel,halA,halB);
+            
             if(debug){
                 Serial.println("Running Animation 3: Ramps");
                 Serial.println("Target: Top, A: Ramp, B: Off");
             }
+            MoveTarget(Top,moveVel,halA,halB);
+
             // Step 2: Move to the bottom, swap the lights
             // Turn halA off for entire move
             for (int i = 0; i < halIndexLength; i++) {
@@ -112,12 +115,11 @@ int halB [halIndexLength];
 
             // Turn halB on for entire move 
             for (int i = 0; i < halIndexLength; i++) {
-                halB[i] = i/halIndexLength * maxBright; // Start off, ramp up to full
+                halB[i] = (float)i/halIndexLength * maxBright; // Start off, ramp up to full
             }        
 
-            MoveTarget(Bot,moveVel,halA,halB);
             if(debug){Serial.println("Target: Bot, A: Off, B: Ramp");}
-
+            MoveTarget(Bot,moveVel,halA,halB);
         break;
     case 4: // Need to add debug outputs still. 
         moveVel = slow;
