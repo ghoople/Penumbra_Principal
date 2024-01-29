@@ -64,18 +64,20 @@ void setup() {
         // Enables output to the motor (must have, even if not using the enable pin on the motor)
         motor.EnableRequest(true);
 
-        // Serial.println("Motor Ready");
+        /* Disable Homing While Testing Lights
 
         // Home the motor
-        Serial.println("Homing Motor");
+        if(debug){Serial.println("Homing Motor");}
         motor.MoveVelocity(homingVelocity); // Move down, will stop when the hard stop is tripped.  
         // Wait for interrupt to trigger when hard stop reached, interrupt code will automatically set the 0 position.
         while (!motor.StepsComplete()) {
             continue;
         }
         
-        Serial.println("Homing Complete");
-
+        if(debug){Serial.println("Homing Complete");}
+        */
+        motor.PositionRefSet(0); // Remove when adding homing code back in above
+    
     // Encoder Setup
         EncoderIn.Enable(true); // Enable the encoder input feature      
         EncoderIn.SwapDirection(false); // Swap direction if you want for the encoder
@@ -98,7 +100,7 @@ void loop() {
 
     Animation(1);
     Animation(2);
-    Animation(4);
+    Animation(3);
 
     Serial.println("Animation Loop Complete");
     delay(5000);
