@@ -76,11 +76,9 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
 //Serial.print("halAIndex: "); Serial.println(halAIndex);
 //Serial.print("halBIndex: "); Serial.println(halBIndex);
 
-
         // Calculate the percentage of the way you are to the end of the move, this is your index 
         halAIndex = halIndexLength - round(abs(currentPos - target)/moveDist * halIndexLength);
         halBIndex = halIndexLength - round(abs(currentPos - target)/moveDist * halIndexLength);
-
 // After calculations
 //Serial.println("After calculations:");
 //Serial.print("halAIndex: "); Serial.println(halAIndex);

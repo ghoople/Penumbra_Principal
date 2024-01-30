@@ -92,16 +92,16 @@ void loop() {
     //Animation Order Defined Here
 
 // This sets the motor to go to the bottom, just needed for blackbox demo. 
-    motor.VelMax(1000);
+    //motor.VelMax(1000);
     // Command the move of absolute distance
-    motor.Move(Bot, MotorDriver::MOVE_TARGET_ABSOLUTE);
-    while (!motor.StepsComplete()) {
-        continue;}
+    //motor.Move(Bot, MotorDriver::MOVE_TARGET_ABSOLUTE);
+    //while (!motor.StepsComplete()) {
+    //    continue;}
 
     Animation(1);
-    Animation(2);
-    Animation(3);
+    //Animation(2);
+    //Animation(3);
 
     Serial.println("Animation Loop Complete");
-    delay(5000);
+    delay(1000);
 }
