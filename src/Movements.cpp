@@ -12,7 +12,6 @@ void Pause(int pauseTime, int* halA, int* halB){
 
 void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
     bool debug = false;
-    int wheelThreshold = 200; // Define what speed the encoder needs to move at for it to be considered a user input (200 pulses/second) 
     int currentPos=0; // Where halA currently is. 
     int startPos=0; // Where halA ligth starts. 
     float moveDist; // Distance of the commanded move. 

@@ -12,6 +12,7 @@
 #define motor ConnectorM0
 #define motorDecel 4000 //Defines how quickly the motor should decelerate when switching into/out of user mode. 
 #define accelerationLimit 9000 // pulses per sec^2
+#define wheelThreshold 200 // Define what speed the encoder needs to move at for it to be considered a user input (200 pulses/second) 
 
 // Define the physical relationship between steps and light position
 // See "Penumbra Motor Calculations" google sheet for value calculator
