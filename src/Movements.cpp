@@ -69,8 +69,8 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
         currentPos = motor.PositionRefCommanded();
 
         // Calculate the percentage of the way you are to the end of the move, this is your index 
-        halAIndex = halIndexLength - round(abs(currentPos - target)/moveDist * halIndexLength);
-        halBIndex = halIndexLength - round(abs(currentPos - target)/moveDist * halIndexLength);
+        halAIndex = (halIndexLength-1) - round(abs(currentPos - target)/moveDist * halIndexLength);
+        halBIndex = (halIndexLength-1) - round(abs(currentPos - target)/moveDist * halIndexLength);
 
         // Send the data to the agent arduino
         Serial1.print(currentPos); // Tell the Agent where the light is. 
