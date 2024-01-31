@@ -66,23 +66,9 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
         // Send target and show data to the Agent Arduino for lighting
         currentPos = motor.PositionRefCommanded();
 
-
-// Before calculations
-//Serial.println("Before calculations:");
-//Serial.print("currentPos: "); Serial.println(currentPos);
-//Serial.print("target: "); Serial.println(target);
-//Serial.print("moveDist: "); Serial.println(moveDist);
-//Serial.print("halIndexLength: "); Serial.println(halIndexLength);
-//Serial.print("halAIndex: "); Serial.println(halAIndex);
-//Serial.print("halBIndex: "); Serial.println(halBIndex);
-
         // Calculate the percentage of the way you are to the end of the move, this is your index 
         halAIndex = halIndexLength - round(abs(currentPos - target)/moveDist * halIndexLength);
         halBIndex = halIndexLength - round(abs(currentPos - target)/moveDist * halIndexLength);
-// After calculations
-//Serial.println("After calculations:");
-//Serial.print("halAIndex: "); Serial.println(halAIndex);
-//Serial.print("halBIndex: "); Serial.println(halBIndex);
 
         // Send the data to the agent arduino
         Serial1.print(currentPos); // Tell the Agent where the light is. 
@@ -97,7 +83,6 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
           //Serial.println("Current Position: " + String(currentPos) + ", Intensity for halA: " + 
           //String(halA[halAIndex]) + ", Intensity for halB: " + String(halB[halBIndex]));
           
-          
           Serial.print(currentPos); // Tell the Agent where the light is. 
           Serial.print(","); 
           Serial.print(halA[halAIndex]);// Tell the agent what the intensity should be for halA
@@ -105,7 +90,6 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
           Serial.println(halB[halBIndex]);// Tell the agent what the intensity should be for halB
           Serial.print("halA index:" + String(halAIndex));
           Serial.println("halB index:" + String(halBIndex));
-        
         }
     
         lastUpdateTime = millis(); // Reset the timer

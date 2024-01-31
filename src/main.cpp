@@ -47,6 +47,10 @@ void setup() {
         attachInterrupt(digitalPinToInterrupt(BotInterruptPin), BottomHardStop, RISING);
         attachInterrupt(digitalPinToInterrupt(TopInterruptPin), TopHardStop, RISING);
     
+    //Configure Potentiometers as inputs
+        pinMode(potAPin, INPUT);
+        pinMode(potBPin, INPUT);
+    
     // Motor Setup
         // Sets the input clocking rate.
         MotorMgr.MotorInputClocking(MotorManager::CLOCK_RATE_LOW);
