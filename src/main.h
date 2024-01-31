@@ -20,6 +20,10 @@
 #define Mid Top/2
 #define Home_Offset 0 // Blackbox Demo offset (manual home button)
 
+// Configure pot pins
+#define potAPin IO0
+#define potBPin IO1
+
 // Define how long the index is for the halogen lighting array. Can't be an int. 
 #define halIndexLength 100
 
