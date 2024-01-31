@@ -59,7 +59,10 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
       if(Wheel_move > wheelThreshold){ // Choose an optimal wheel_velocity to use for this
         motor.MoveStopDecel(motorDecel); // Stop the motor
         WheelControl(); // Go to wheel control
+        Serial.println("Back from wheel control");
+        break; // Break out of the while loop. Thi is critically important, without it, the ClearCore becomes inconsistenly unresponsive.
       }     
+
 
       // Timer for updating the arduino agent with position and show data. 
       if (millis() - lastUpdateTime >= updateInterval) {
