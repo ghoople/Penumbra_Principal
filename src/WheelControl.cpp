@@ -119,8 +119,6 @@ void WheelControl() {
         Serial1.print(potA);// Tell the agent what the intensity should be for halA
         Serial1.print(","); 
         Serial1.println(potB);// Tell the agent what the intensity should be for halB
-
-       // delay(50); // Add a short delay to stop reading the encoder so fast. 
       }
     }
 
