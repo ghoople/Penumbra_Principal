@@ -6,6 +6,13 @@
 #include <Arduino.h>
 #include <ClearCore.h>
 
+// Configure Interrupt Pins for the hard stops
+// Pins that support digital interrupts on clear core are:
+// DI-6, DI-7, DI-8, A-9, A-10, A-11, A-12
+#define BotInterruptPin A10
+#define TopInterruptPin A11
+
+extern bool hardStopTrip; // Global variable to track if a hard stop has been tripped.
 
 // My code (and example code) uses motor instead of the connector name. 
 // Options are: ConnectorM0, ConnectorM1, ConnectorM2, or ConnectorM3.

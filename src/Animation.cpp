@@ -15,7 +15,7 @@
 // After homing the motor will start at the bottom. 
 
 void Animation(int showNum) {
-bool debug = true;
+bool debug = false;
 // Define variables
 int moveVel; // How fast the move
 int halA [halIndexLength];

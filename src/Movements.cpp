@@ -53,15 +53,21 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
 
     while (!motor.StepsComplete()) {
 
-      // Monitor Encoder for Velocity Changes
+      // Monitor the encoder for Velocity Changes, if they happen head over to the wheel control function
       int32_t Wheel_move = EncoderIn.Velocity(); // Read the encoder velocity
       if(Wheel_move > wheelThreshold){ // Choose an optimal wheel_velocity to use for this
         motor.MoveStopDecel(motorDecel); // Stop the motor
         WheelControl(); // Go to wheel control
         Serial.println("Back from wheel control");
-        break; // Break out of the while loop. Thi is critically important, without it, the ClearCore becomes inconsistenly unresponsive.
-      }     
+        break; // Break out of the while loop. This is critically important, without it the ClearCore becomes inconsistenly unresponsive.
+      } 
 
+      // Check for hard stop trips, break out of while loop if one is detected to avoid infinite loop. 
+      if(hardStopTrip){
+        if(debug){Serial.println("Hard Stop Trip Detected, breaking out of while loop to avoid crash.");}
+        hardStopTrip = false; // Reset the global hard stop trip variable
+        break; // Break out of the while loop. This is critically important, without it, the ClearCore becomes inconsistenly unresponsive.
+      }    
 
       // Timer for updating the arduino agent with position and show data. 
       if (millis() - lastUpdateTime >= updateInterval) {
