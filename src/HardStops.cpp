@@ -9,16 +9,15 @@ void BottomHardStop() {
     Serial.println("Bottom Hard Stop Triggered");
     
     // Move away from the hard stop
-    motor.VelMax(2000); // Move at 2000 pulse/sec away from hard stop
+    motor.VelMax(2000); // Increase speed to 2000 pulse/sec for the move away from the hard stop
 
     motor.Move(Home_Offset);
         Serial.println("Moving away from the hard stop... Waiting for the step output to finish...");
     while (!motor.StepsComplete()) {
         continue;
     }
-
+    
     // Zero the motor's reference position after homing to allow for accurate absolute position moves
-
     motor.PositionRefSet(0);      
 }
 

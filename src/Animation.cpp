@@ -1,5 +1,14 @@
 #include "main.h"
 
+/* Key Positions, defined in the main.h file as we need them in multiple places.
+Bot ; this is when the primary lightthe bottom (0) position 
+Top ; this is when the primary light is all the way at the top
+Mid ; this is defined as halfway to the top
+*/
+// Additional Positions used only in animations, may want to add more. 
+#define oneThird Top/3
+#define twoThirds 2*Top/3
+
 // Velocities, in pulses/second, for the light movements. 
 #define fast 2000
 #define med 1000
@@ -11,13 +20,13 @@
 #define lowBright 5
 #define off 0
 
-// By Convention all animations should end at the bottom (So you can assume you are starting from the bottom) 
+// By convention, all animations should end at the bottom (So you can assume you are starting from the bottom) 
 // After homing the motor will start at the bottom. 
 
 void Animation(int showNum) {
 bool debug = true;
 // Define variables
-int moveVel; // How fast the move
+int moveVel; // How fast is the move
 int halA [halIndexLength];
 int halB [halIndexLength];
 
@@ -138,9 +147,6 @@ int halB [halIndexLength];
             halB[i] = midBright + i/halIndexLength * midBright; // Continue ramping up halB
         }
         MoveTarget(Bot,moveVel,halA,halB);
-
-
-
 
         break;
     case 5:

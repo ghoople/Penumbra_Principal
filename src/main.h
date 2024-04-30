@@ -16,9 +16,9 @@
 // Define the physical relationship between steps and light position
 // See "Penumbra Motor Calculations" google sheet for value calculator
 #define Bot 0 
-#define Top 7840 // Blackbox Demo
+#define Top 12740 // This is the number of pulses to get to the top.
 #define Mid Top/2
-#define Home_Offset 0 // Blackbox Demo offset (manual home button)
+#define Home_Offset 95 // This is 1 inch in pulses (I think)
 
 // Configure pot pins
 #define potAPin IO0

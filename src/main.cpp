@@ -5,13 +5,13 @@
  * 
  */
 #include "main.h"
-// Test
+
 
 // Configure Interrupt Pins for the hard stops
 // Pins that support digital interrupts on clear core are:
 // DI-6, DI-7, DI-8, A-9, A-10, A-11, A-12
-#define BotInterruptPin A10
-#define TopInterruptPin A11
+#define BotInterruptPin A10 // This is for the primary hard stop, triggered on the homing sequence.
+#define TopInterruptPin A11 // This is for the secondary hard stop, triggered when the primary light is at the top. 
 
 // Define the baud rate for the serial devices
 #define usbBaudRate 9600
@@ -20,7 +20,8 @@
 // Define the initial velocity limit, acceleration limit, and commanded deceleration to be used for default moves
 #define initialVelocityLimit 2000 // pulses per sec
 
-#define homingVelocity 500 //Velocity to home the motor. 
+// Homing velocity might need to have the sign changed so that it goes the correct direction. 
+#define homingVelocity -500 //Velocity to home the motor. 
 
 void setup() {
     bool debug = true;
@@ -59,16 +60,15 @@ void setup() {
         MotorMgr.MotorModeSet(MotorManager::MOTOR_ALL,
                             Connector::CPM_MODE_STEP_AND_DIR);
 
-        // Sets the maximum velocity for each move
+        // Sets the initial velocity for each move
         motor.VelMax(initialVelocityLimit);
 
-        // Set the maximum acceleration for each move
+        // Set the acceleration limit for each move
         motor.AccelMax(accelerationLimit);
 
         // Enables output to the motor (must have, even if not using the enable pin on the motor)
         motor.EnableRequest(true);
 
-        /* Disable Homing While Testing Lights
 
         // Home the motor
         if(debug){Serial.println("Homing Motor");}
@@ -79,8 +79,6 @@ void setup() {
         }
         
         if(debug){Serial.println("Homing Complete");}
-        */
-        motor.PositionRefSet(0); // Remove when adding homing code back in above
     
     // Encoder Setup
         EncoderIn.Enable(true); // Enable the encoder input feature      
@@ -95,15 +93,15 @@ void setup() {
 void loop() {
     //Animation Order Defined Here
 
-// This sets the motor to go to the bottom, just needed for blackbox demo. 
-    motor.VelMax(1000);
-    // Command the move of absolute distance
+/*
+    // Might want to move the light carriage to the bottom, this is where all animations are assumed to start (in case there was an error)
     motor.Move(Bot, MotorDriver::MOVE_TARGET_ABSOLUTE);
     while (!motor.StepsComplete()) {
         continue;}
+*/
 
-    //Animation(1);
-    //Animation(2);
+    Animation(1);
+    Animation(2);
     Animation(3);
 
     Serial.println("Animation Loop Complete");
