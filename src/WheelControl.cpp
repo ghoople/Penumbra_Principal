@@ -93,10 +93,6 @@ void WheelControl() {
         }
         lastWheelPosition = wheelPosition;
         motorStartTime = millis();
-        
-        // Send the intesity data to the halogen lights
-
-// Add this Code! 
 
         // Send the required data to the agent arduino
         int currentPos = motor.PositionRefCommanded();
@@ -106,8 +102,7 @@ void WheelControl() {
         Serial1.print(potA);// Tell the agent what the intensity should be for halA
         Serial1.print(","); 
         Serial1.println(potB);// Tell the agent what the intensity should be for halB
-
-
+        
       }
     
     motor.MoveStopDecel(motorDecel); // Stop the motor at the deceleration limit (set in main.cpp)
