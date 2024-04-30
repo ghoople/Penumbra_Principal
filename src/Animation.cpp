@@ -24,7 +24,7 @@ Mid ; this is defined as halfway to the top
 // After homing the motor will start at the bottom. 
 
 void Animation(int showNum) {
-bool debug = true;
+bool debug = false;
 // Define variables
 int moveVel; // How fast is the move
 int halA [halIndexLength];
@@ -46,6 +46,10 @@ int halB [halIndexLength];
             MoveTarget(Top,moveVel,halA,halB);
 
             // Step 2: Pause
+            for (int i = 0; i < halIndexLength; i++) {
+                halA[i] = maxBright;
+                halB[i] = maxBright;
+            }
             if(debug){Serial.println("Target: Pause, A: Max, B: Max");}
             Pause(2,halA,halB); // pause for 2 seconds
             

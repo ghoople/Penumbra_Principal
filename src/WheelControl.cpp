@@ -16,22 +16,27 @@ It allows the user to control the light for a defined interval of time.
 
 // Set the update intervals for the timer loops. 
 #define wheelTimeout 10000 // 10 seconds
-#define motorUpdateInterval 200 // 200 ms
 #define encoderAverageInterval 100 // 100 ms
+#define encoderReadInterval 25 // ms
 #define motorVelocityReset 2000 // Resets the motor velocity at the end of user interaction. 
+unsigned long motorUpdateInterval = 200; // Interval to update the motor
 
+int loop_count = 0;
 
 void WheelControl() {
     bool debug = false;
-    // The motor will follow user input on a wheel as measured by an encoder. 
-    if(debug){Serial.println("Entering the Wheel Control Loop ");}
+
+    if(debug){
+      motorUpdateInterval = 500; // Slow down motor updates. 
+      Serial.println("Entering Wheel Control Function");
+    }
 
     // Declare variables needed for this function only. 
     int32_t wheelPosition = 0;
     int32_t lastWheelPosition = 0;
     int32_t wheelVelocity = 0;
-    int totalVelocity = 0;
-    int readingsCount = 0;
+    long totalVelocity = 0;
+    long readingsCount = 0;
     int userSpeed = 0; 
 
 /*
@@ -47,14 +52,20 @@ void WheelControl() {
     int potA = 120;
     int potB = 0; 
 
-    // This timer keeps us in a while loop for wheelTimeout seconds. This is how long the user can play with the wheel before reverting back to the original code.   
-    uint32_t wheelStartTime, encoderStartTime, motorStartTime;
-    wheelStartTime = encoderStartTime = motorStartTime = millis();
+    // This timer keeps us in a while loop until wheelTimeout ms after the last time a user moved the wheel above the threshold speed. 
+    uint32_t lastWheelMoveTime, encoderStartTime, motorStartTime, encoderReadTime;
+    lastWheelMoveTime = encoderStartTime = motorStartTime = encoderReadTime = millis();
     
-    while (millis() - wheelStartTime < wheelTimeout) {
+    while (millis() - lastWheelMoveTime < wheelTimeout) {
       
-      wheelPosition = EncoderIn.Position(); // Read the encoder position
-      wheelVelocity = EncoderIn.Velocity(); // Read the encoder velocity
+      if (millis() - encoderReadTime >= encoderReadInterval) {
+        wheelPosition = EncoderIn.Position(); // Read the encoder position
+        wheelVelocity = EncoderIn.Velocity(); // Read the encoder velocity
+        if (wheelVelocity > wheelThreshold) {
+          lastWheelMoveTime = millis();
+        }
+        encoderReadTime = millis();
+      }
 
       totalVelocity += wheelVelocity; // Add the wheel velocity to the totalVelocity variable. 
       readingsCount++; // Increment the number of readings we have taken
@@ -63,10 +74,6 @@ void WheelControl() {
       if (millis() - encoderStartTime >= encoderAverageInterval) {
         // Calculate average velocity over 0.1 seconds
         float averageVelocity = totalVelocity / readingsCount;
-
-        // Print the average velocity
-        // Serial.print("Average Wheel Velocity: ");
-        // Serial.println(averageVelocity);
         
         //Convert the averageVelocity (counts/second) to an appropriate motor speed (Pulses/sec).
         userSpeed = map(abs(averageVelocity),0,encoderMaxSpeed,0,motorMaxSpeed);
@@ -84,15 +91,25 @@ void WheelControl() {
         if(wheelPosition > lastWheelPosition){ // Go UP
           motor.VelMax(userSpeed); // Sets the maximum velocity for this move based on the potentiometer
           motor.Move(Top, MotorDriver::MOVE_TARGET_ABSOLUTE); // Commands the motor move (with no waiting step before commanding additional moves!)
-          //Serial.print("Moving up at user speed: ");
-          //Serial.println(userSpeed);
+          
+          if(debug){
+            Serial.print("Moving up at user speed: ");
+            Serial.println(userSpeed);
+          }
+
         }
         else{ // Go Down
           motor.VelMax(userSpeed); // Sets the maximum velocity for this move based on the userSpeed
           motor.Move(Bot, MotorDriver::MOVE_TARGET_ABSOLUTE); // Commands the motor move (with no waiting step before commanding additional moves!)
+          if(debug){
+            Serial.print("Moving down at user speed: ");
+            Serial.println(userSpeed);
+          }
         }
         lastWheelPosition = wheelPosition;
         motorStartTime = millis();
+      
+        if(debug){Serial.println("Sending data to agent");}
 
         // Send the required data to the agent arduino
         int currentPos = motor.PositionRefCommanded();
@@ -102,12 +119,17 @@ void WheelControl() {
         Serial1.print(potA);// Tell the agent what the intensity should be for halA
         Serial1.print(","); 
         Serial1.println(potB);// Tell the agent what the intensity should be for halB
-        
       }
-    
-    motor.MoveStopDecel(motorDecel); // Stop the motor at the deceleration limit (set in main.cpp)
-    motor.VelMax(motorVelocityReset); // Reset the motor velocity to something reasonable (in case wheel was at 0)
-    if(debug){Serial.println("Exiting Wheel Control Mode ");}
     }
+
+
+
+  // Prepare to exit the wheel control mode
+  motor.MoveStopDecel(motorDecel); // Stop the motor at the deceleration limit (set in main.cpp)
+  while(!motor.StepsComplete()){ // Wait for the motor to stop
+    // Do nothing
+  }
+  motor.VelMax(motorVelocityReset); // Reset the motor velocity to something reasonable (in case wheel was at 0)
+  if(debug){Serial.println("Exiting Wheel Control Mode ");}
 
 }

@@ -12,7 +12,6 @@ void Pause(int pauseTime, int* halA, int* halB){
 
 void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
     bool debug = false;
-    int wheelThreshold = 200; // Define what speed the encoder needs to move at for it to be considered a user input (200 pulses/second) 
     int currentPos=0; // Where halA currently is. 
     int startPos=0; // Where halA ligth starts. 
     float moveDist; // Distance of the commanded move. 
@@ -54,12 +53,21 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
 
     while (!motor.StepsComplete()) {
 
-      // Monitor Encoder for Velocity Changes
+      // Monitor the encoder for Velocity Changes, if they happen head over to the wheel control function
       int32_t Wheel_move = EncoderIn.Velocity(); // Read the encoder velocity
       if(Wheel_move > wheelThreshold){ // Choose an optimal wheel_velocity to use for this
         motor.MoveStopDecel(motorDecel); // Stop the motor
         WheelControl(); // Go to wheel control
-      }     
+        Serial.println("Back from wheel control");
+        break; // Break out of the while loop. This is critically important, without it the ClearCore becomes inconsistenly unresponsive.
+      } 
+
+      // Check for hard stop trips, break out of while loop if one is detected to avoid infinite loop. 
+      if(hardStopTrip){
+        if(debug){Serial.println("Hard Stop Trip Detected, breaking out of while loop to avoid crash.");}
+        hardStopTrip = false; // Reset the global hard stop trip variable
+        break; // Break out of the while loop. This is critically important, without it, the ClearCore becomes inconsistenly unresponsive.
+      }    
 
       // Timer for updating the arduino agent with position and show data. 
       if (millis() - lastUpdateTime >= updateInterval) {
@@ -67,8 +75,8 @@ void MoveTarget(int target, int velocityLimit, int* halA, int* halB) {
         currentPos = motor.PositionRefCommanded();
 
         // Calculate the percentage of the way you are to the end of the move, this is your index 
-        halAIndex = halIndexLength - round(abs(currentPos - target)/moveDist * halIndexLength);
-        halBIndex = halIndexLength - round(abs(currentPos - target)/moveDist * halIndexLength);
+        halAIndex = (halIndexLength-1) - round(abs(currentPos - target)/moveDist * (halIndexLength-1));
+        halBIndex = (halIndexLength-1) - round(abs(currentPos - target)/moveDist * (halIndexLength-1));
 
         // Send the data to the agent arduino
         Serial1.print(currentPos); // Tell the Agent where the light is. 

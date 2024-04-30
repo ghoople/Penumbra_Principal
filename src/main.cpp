@@ -6,13 +6,6 @@
  */
 #include "main.h"
 
-
-// Configure Interrupt Pins for the hard stops
-// Pins that support digital interrupts on clear core are:
-// DI-6, DI-7, DI-8, A-9, A-10, A-11, A-12
-#define BotInterruptPin A10 // This is for the primary hard stop, triggered on the homing sequence.
-#define TopInterruptPin A11 // This is for the secondary hard stop, triggered when the primary light is at the top. 
-
 // Define the baud rate for the serial devices
 #define usbBaudRate 9600
 #define agentBaudRate 9600
@@ -105,5 +98,5 @@ void loop() {
     Animation(3);
 
     Serial.println("Animation Loop Complete");
-    delay(5000);
+    delay(1000);
 }
