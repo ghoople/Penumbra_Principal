@@ -7,7 +7,7 @@ bool hardStopTrip = false; // Variable to track if a hard stop has been tripped.
 void BottomHardStop() {
     // Called via interrupt when the hard stop pin is tripped. 
     
-    // Deattach the hard stop pin so it doesn't trip twice (had this problem)
+    // Deattach the hard stop pin so it doesn't trip twice (had this problem, known as "bouncing")
     detachInterrupt(digitalPinToInterrupt(BotInterruptPin)); // Deattach the interrupt
     
     motor.MoveStopAbrupt(); // Stop the motor

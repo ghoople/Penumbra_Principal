@@ -9,8 +9,8 @@
 // Configure Interrupt Pins for the hard stops
 // Pins that support digital interrupts on clear core are:
 // DI-6, DI-7, DI-8, A-9, A-10, A-11, A-12
-#define BotInterruptPin A10
-#define TopInterruptPin A11
+#define BotInterruptPin A11
+#define TopInterruptPin A12
 
 extern bool hardStopTrip; // Global variable to track if a hard stop has been tripped.
 
