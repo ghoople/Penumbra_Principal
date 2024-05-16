@@ -10,7 +10,7 @@ Mid ; this is defined as halfway to the top
 #define twoThirds 2*Top/3
 
 // Velocities, in pulses/second, for the light movements. 
-#define fast 2000
+#define fast 1500
 #define med 1000
 #define slow 500
 
@@ -101,7 +101,7 @@ int halB [halIndexLength];
 
         break;
     case 3: // Ramp the brightness of A on way up, B on way down.  
-            moveVel = med;
+            moveVel = slow;
 
             // Step 1: Move to the top with the lights on
             // Turn halA on for entire move
