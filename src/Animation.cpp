@@ -54,7 +54,6 @@ int halB [halIndexLength];
             Pause(2,halA,halB); // pause for 2 seconds
             
             // Step 3: Move to the bottom, lights low
-            // Set halA and halB to the max brightness everywhere
             for (int i = 0; i < halIndexLength; i++) {
                 halA[i] = lowBright;
                 halB[i] = lowBright;
@@ -153,8 +152,31 @@ int halB [halIndexLength];
         MoveTarget(Bot,moveVel,halA,halB);
 
         break;
-    case 5:
-        // statements
+    case 5: // Debug movements and light timing: Light on for up, off for down. 
+        moveVel = fast;
+        
+        // Step 1: Move to Top, A on, B off.
+            for (int i = 0; i < halIndexLength; i++) {
+                halA[i] = maxBright;
+                halB[i] = off; // Ramp up halB as well
+            }
+            MoveTarget(Top,moveVel,halA,halB);
+            
+        // Step 2: Pause
+            for (int i = 0; i < halIndexLength; i++) {
+                halA[i] = off;
+                halB[i] = off;
+            }
+            Pause(2,halA,halB); // pause for 2 seconds
+            
+        // Step 3: Move to the bottom, A off, B on. 
+            for (int i = 0; i < halIndexLength; i++) {
+                halA[i] = off;
+                halB[i] = maxBright;
+            }
+            
+            MoveTarget(Bot,moveVel,halA,halB);
+
         break;
     case 6:
         // statements
