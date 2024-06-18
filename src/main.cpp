@@ -89,11 +89,9 @@ void loop() {
         continue;}
 */
 
-    //Animation(1);
-    //Animation(2);
-    //Animation(3);
-
-    Animation(5);
+    Animation(1);
+    Animation(2);
+    Animation(3);
 
     Serial.println("Animation Loop Complete");
     delay(1000);

@@ -51,7 +51,7 @@ int halB [halIndexLength];
 
         break;
     case 2: // Lights are on when they are moving up only. 
-        if(debug){Serial.println("Running Animation 1");}
+        if(debug){Serial.println("Running Animation 2");}
 
         moveVel = med;
         // Step 1: Move to the top, halA on
@@ -71,41 +71,31 @@ int halB [halIndexLength];
         MoveTarget(Bot,moveVel,halA,halB);
 
         break;
-    case 3: // Ramp the brightness of A on way up, B on way down.  
-            moveVel = slow;
+    case 3: // Ramp the brightness of the lights as they move up 
+        if(debug){Serial.println("Running Animation 1");}
 
-            // Step 1: Move to the top with the lights on
-            // Turn halA on for entire move
-            for (int i = 0; i < halIndexLength; i++) {
-                halA[i] = (float)i/halIndexLength * maxBright;
-            }
+        moveVel = slow;
 
-            // Turn halB off for entire move 
-            for (int i = 0; i < halIndexLength; i++) {
-                halB[i] = off;
-            }        
-            
-            if(debug){
-                Serial.println("Running Animation 3: Ramps");
-                Serial.println("Target: Top, A: Ramp, B: Off");
-            }
-            MoveTarget(Top,moveVel,halA,halB);
+        // Step 1: Move to the top with the lights on
+        for (int i = 0; i < halIndexLength; i++) {
+            halA[i] = (float)i/halIndexLength * maxBright; // HalA ramps up. 
+            halB[i] = off; // Turn off
+        }
 
-            // Step 2: Move to the bottom, swap the lights
-            // Turn halA off for entire move
-            for (int i = 0; i < halIndexLength; i++) {
-                halA[i] = off;
-            }
+        MoveTarget(Top,moveVel,halA,halB);
 
-            // Turn halB on for entire move 
-            for (int i = 0; i < halIndexLength; i++) {
-                halB[i] = (float)i/halIndexLength * maxBright; // Start off, ramp up to full
-            }        
+        // Step 2: Move to the bottom, swap the lights
+        // Turn halA off for entire move
+        for (int i = 0; i < halIndexLength; i++) {
+            halA[i] = off;
+            halB[i] = (float)i/halIndexLength * maxBright; // Start off, ramp up to full
+        }
 
-            if(debug){Serial.println("Target: Bot, A: Off, B: Ramp");}
-            MoveTarget(Bot,moveVel,halA,halB);
+        MoveTarget(Bot,moveVel,halA,halB);
+
         break;
-    case 4: // Need to add debug outputs still. 
+
+    case 4: // Random code I was messing iwth. 
         moveVel = slow;
         // Step 1: Move to the top with the lights on
         // Ramp halA and halB for entire move
@@ -124,7 +114,7 @@ int halB [halIndexLength];
         MoveTarget(Bot,moveVel,halA,halB);
 
         break;
-    case 5: // Debug movements and light timing: Light on for up, off for down. 
+    case 5: // Some simple debug code Light A on for up, off for down. 
         moveVel = fast;
         
         // Step 1: Move to Top, A on, B off.
