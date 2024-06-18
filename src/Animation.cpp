@@ -31,72 +31,44 @@ int halA [halIndexLength];
 int halB [halIndexLength];
 
     switch (showNum) {
-    case 1: // Move to the Top and back to the Bottom.
-            moveVel = fast;
-            // Step 1: Move to the top, lights max
-            // Set halA and halB to the max brightness everywhere
-            for (int i = 0; i < halIndexLength; i++) {
-                halA[i] = maxBright;
-                halB[i] = maxBright;
-            }
-            if(debug){
-                Serial.println("Running Animation 1: Max and Low");
-                Serial.println("Target: Top, A: Max, B: Max");
-            }
-            MoveTarget(Top,moveVel,halA,halB);
-
-            // Step 2: Pause
-            for (int i = 0; i < halIndexLength; i++) {
-                halA[i] = maxBright;
-                halB[i] = maxBright;
-            }
-            if(debug){Serial.println("Target: Pause, A: Max, B: Max");}
-            Pause(2,halA,halB); // pause for 2 seconds
-            
-            // Step 3: Move to the bottom, lights low
-            for (int i = 0; i < halIndexLength; i++) {
-                halA[i] = lowBright;
-                halB[i] = lowBright;
-            }
-            if(debug){Serial.println("Target: Bot, A: Low, B: Low");}
-            MoveTarget(Bot,moveVel,halA,halB);
+    case 1: // Fast move, Light A on the whole time. 
+        if(debug){Serial.println("Running Animation 1");}
+        
+        moveVel = fast;
+        // Step 1: Move to the top, lights A on
+        for (int i = 0; i < halIndexLength; i++) {
+            halA[i] = maxBright;
+            halB[i] = 0;
+        }
+        MoveTarget(Top,moveVel,halA,halB);
+        
+        // Step 2: Move to the bottom, light A stays on. 
+        for (int i = 0; i < halIndexLength; i++) {
+            halA[i] = maxBright;
+            halB[i] = 0;
+        }
+        MoveTarget(Bot,moveVel,halA,halB);
 
         break;
     case 2: // Lights are on when they are moving up only. 
-            moveVel = med;
+        if(debug){Serial.println("Running Animation 1");}
 
-            // Step 1: Move to the top, halA on
+        moveVel = med;
+        // Step 1: Move to the top, halA on
+        for (int i = 0; i < halIndexLength; i++) {
+            halA[i] = maxBright;
+            halB[i] = off;
+        }
+       
+        MoveTarget(Top,moveVel,halA,halB);
 
-            // Turn halA on for entire move
-            for (int i = 0; i < halIndexLength; i++) {
-                halA[i] = maxBright;
-            }
+        // Step 2: Move to the bottom, halB on
+        for (int i = 0; i < halIndexLength; i++) {
+            halA[i] = off;
+            halB[i] = maxBright;
+        }
 
-            // Turn halB off for entire move 
-            for (int i = 0; i < halIndexLength; i++) {
-                halB[i] = off;
-            }        
-            if(debug){
-                Serial.println("Running Animation 2: Swap Lights");
-                Serial.println("Target: Top, A: Max, B: Off");
-            }
-            MoveTarget(Top,moveVel,halA,halB);
-
-            // Step 2: Move to the bottom, swap the lights
-            // Turn halA off for entire move
-
-            
-            for (int i = 0; i < halIndexLength; i++) {
-                halA[i] = off;
-            }
-
-            // Turn halB on for entire move 
-            for (int i = 0; i < halIndexLength; i++) {
-                halB[i] = maxBright;
-            }        
-
-            if(debug){Serial.println("Target: Bot, A: Off, B: Max");}
-            MoveTarget(Bot,moveVel,halA,halB);
+        MoveTarget(Bot,moveVel,halA,halB);
 
         break;
     case 3: // Ramp the brightness of A on way up, B on way down.  
@@ -158,7 +130,7 @@ int halB [halIndexLength];
         // Step 1: Move to Top, A on, B off.
             for (int i = 0; i < halIndexLength; i++) {
                 halA[i] = maxBright;
-                halB[i] = off; // Ramp up halB as well
+                halB[i] = off; 
             }
             MoveTarget(Top,moveVel,halA,halB);
             
@@ -180,6 +152,15 @@ int halB [halIndexLength];
         break;
     case 6:
         // statements
+         // Step 2: Pause
+            for (int i = 0; i < halIndexLength; i++) {
+                halA[i] = maxBright;
+                halB[i] = maxBright;
+            }
+            if(debug){Serial.println("Target: Pause, A: Max, B: Max");}
+            Pause(2,halA,halB); // pause for 2 seconds
+            
+
         break;
     default:
         // statements

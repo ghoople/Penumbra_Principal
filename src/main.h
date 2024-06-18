@@ -28,10 +28,6 @@ extern bool hardStopTrip; // Global variable to track if a hard stop has been tr
 #define Mid Top/2
 #define Home_Offset 95 // This is 1 inch in pulses (I think)
 
-// Configure pot pins
-#define potAPin IO0
-#define potBPin IO1
-
 // Define how long the index is for the halogen lighting array. Can't be an int. 
 #define halIndexLength 100
 

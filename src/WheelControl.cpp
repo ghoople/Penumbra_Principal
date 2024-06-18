@@ -19,7 +19,7 @@ It allows the user to control the light for a defined interval of time.
 #define encoderAverageInterval 100 // 100 ms
 #define encoderReadInterval 25 // ms
 #define motorVelocityReset 2000 // Resets the motor velocity at the end of user interaction. 
-unsigned long motorUpdateInterval = 200; // Interval to update the motor
+unsigned long motorUpdateInterval = 200; // ms interval to update the motor
 
 int loop_count = 0;
 
@@ -39,18 +39,9 @@ void WheelControl() {
     long readingsCount = 0;
     int userSpeed = 0; 
 
-/*
-    //Code to read the potentiometers
-    int potA = analogRead(potAPin);
-    int potB = analogRead(potBPin);
-
-    potA = map(potA,0,1023,0,255); // Map the potentiometer values to the range of 0-255. Will need to adapt based on actual potentiometer readings. 
-    potB = map(potB,0,1023,0,255);
-*/
-
-// Temp code until I get potentiometers working
-    int potA = 120;
-    int potB = 0; 
+// Define the DMX brightness for the halogne lights during wheel control mode, Ranges 0 -> 255. 
+    int intensityA = 120;
+    int intensityB = 0; 
 
     // This timer keeps us in a while loop until wheelTimeout ms after the last time a user moved the wheel above the threshold speed. 
     uint32_t lastWheelMoveTime, encoderStartTime, motorStartTime, encoderReadTime;
@@ -116,13 +107,11 @@ void WheelControl() {
 
         Serial1.print(currentPos); // Tell the Agent where the light is. 
         Serial1.print(","); 
-        Serial1.print(potA);// Tell the agent what the intensity should be for halA
+        Serial1.print(intensityA);// Tell the agent what the intensity should be for halA
         Serial1.print(","); 
-        Serial1.println(potB);// Tell the agent what the intensity should be for halB
+        Serial1.println(intensityB);// Tell the agent what the intensity should be for halB
       }
     }
-
-
 
   // Prepare to exit the wheel control mode
   motor.MoveStopDecel(motorDecel); // Stop the motor at the deceleration limit (set in main.cpp)
