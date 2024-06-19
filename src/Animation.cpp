@@ -15,9 +15,9 @@ Mid ; this is defined as halfway to the top
 #define slow 500
 
 // DMX Brightness Levels, range is 0 -> 255
-#define maxBright 80
-#define midBright 20
-#define lowBright 5
+#define maxBright 200
+#define midBright 100
+#define lowBright 80
 #define off 0
 
 // By convention, all animations should end at the bottom (So you can assume you are starting from the bottom) 
