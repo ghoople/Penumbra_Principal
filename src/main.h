@@ -31,6 +31,11 @@ extern bool hardStopTrip; // Global variable to track if a hard stop has been tr
 // Define how long the index is for the halogen lighting array. Can't be an int. 
 #define halIndexLength 100
 
+// DMX Brightness Levels, range is 0 -> 255
+#define maxBright 255
+#define midBright 175
+#define lowBright 150
+#define off 0
 
 // Function Declarations
 void Pause(int pauseTime, int* halA, int* halB);

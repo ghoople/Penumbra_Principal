@@ -40,7 +40,7 @@ void WheelControl() {
     int userSpeed = 0; 
 
 // Define the DMX brightness for the halogne lights during wheel control mode, Ranges 0 -> 255. 
-    int intensityA = 120;
+    int intensityA = maxBright;
     int intensityB = 0; 
 
     // This timer keeps us in a while loop until wheelTimeout ms after the last time a user moved the wheel above the threshold speed. 

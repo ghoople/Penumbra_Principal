@@ -11,14 +11,16 @@ Mid ; this is defined as halfway to the top
 
 // Velocities, in pulses/second, for the light movements. 
 #define fast 1500
-#define med 1000
-#define slow 500
+#define med 500
+#define slow 250
 
+/* SEE main.h for actual levels
 // DMX Brightness Levels, range is 0 -> 255
-#define maxBright 200
-#define midBright 100
+#define maxBright 255
+#define midBright 150
 #define lowBright 80
 #define off 0
+*/
 
 // By convention, all animations should end at the bottom (So you can assume you are starting from the bottom) 
 // After homing the motor will start at the bottom. 
@@ -34,7 +36,7 @@ int halB [halIndexLength];
     case 1: // Fast move, Light A on the whole time. 
         if(debug){Serial.println("Running Animation 1");}
         
-        moveVel = fast;
+        moveVel = med;
         // Step 1: Move to the top, lights A on
         for (int i = 0; i < halIndexLength; i++) {
             halA[i] = maxBright;
@@ -53,10 +55,10 @@ int halB [halIndexLength];
     case 2: // Lights are on when they are moving up only. 
         if(debug){Serial.println("Running Animation 2");}
 
-        moveVel = med;
+        moveVel = slow;
         // Step 1: Move to the top, halA on
         for (int i = 0; i < halIndexLength; i++) {
-            halA[i] = maxBright;
+            halA[i] = midBright;
             halB[i] = off;
         }
        
@@ -65,7 +67,7 @@ int halB [halIndexLength];
         // Step 2: Move to the bottom, halB on
         for (int i = 0; i < halIndexLength; i++) {
             halA[i] = off;
-            halB[i] = maxBright;
+            halB[i] = midBright;
         }
 
         MoveTarget(Bot,moveVel,halA,halB);
